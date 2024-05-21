@@ -1,49 +1,44 @@
 import { useEffect, useState } from 'react';
-import './App.css';
+import './index.css';
 
 function App() {
-    const [forecasts, setForecasts] = useState();
+
+    const updateBackgroundClass = () => {
+        const width = window.innerWidth;
+        const root = document.documentElement;
+
+        if (width > 1100) {
+            root.classList.add('wide-bg');
+            root.classList.remove('narrow-bg');
+        } else {
+            root.classList.add('narrow-bg');
+            root.classList.remove('wide-bg');
+        }
+    };
 
     useEffect(() => {
-        populateWeatherData();
-    }, []);
+        updateBackgroundClass(); // Set initial background class
+        window.addEventListener('resize', updateBackgroundClass); // Update background class on resize
 
-    const contents = forecasts === undefined
-        ? <p><em>Loading... Please refresh once the ASP.NET backend has started. See <a href="https://aka.ms/jspsintegrationreact">https://aka.ms/jspsintegrationreact</a> for more details.</em></p>
-        : <table className="table table-striped" aria-labelledby="tabelLabel">
-            <thead>
-                <tr>
-                    <th>Date</th>
-                    <th>Temp. (C)</th>
-                    <th>Temp. (F)</th>
-                    <th>Summary</th>
-                </tr>
-            </thead>
-            <tbody>
-                {forecasts.map(forecast =>
-                    <tr key={forecast.date}>
-                        <td>{forecast.date}</td>
-                        <td>{forecast.temperatureC}</td>
-                        <td>{forecast.temperatureF}</td>
-                        <td>{forecast.summary}</td>
-                    </tr>
-                )}
-            </tbody>
-        </table>;
+        return () => {
+            window.removeEventListener('resize', updateBackgroundClass); // Clean up the event listener on unmount
+        };
+    }, []);
 
     return (
         <div>
-            <h1 id="tabelLabel">Weather forecast</h1>
-            <p>This component demonstrates fetching data from the server.</p>
-            {contents}
+            <h1 id="tabelLabel">Yugioh Webshop</h1>
+            <button>All cards</button>
+            <button>Monster cards</button>
+            <button>Spell/Trap cards</button>
+            <button>Register</button>
+            <button>Login</button>
+            <button>Logout</button>
+            <button>Cart</button>
+            
         </div>
     );
     
-    async function populateWeatherData() {
-        const response = await fetch('weatherforecast');
-        const data = await response.json();
-        setForecasts(data);
-    }
 }
 
 export default App;
