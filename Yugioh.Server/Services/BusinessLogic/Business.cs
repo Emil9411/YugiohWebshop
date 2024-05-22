@@ -50,6 +50,13 @@ namespace Yugioh.Server.Services.BusinessLogic
             _logger.LogInformation("Business: Database cleaned");
         }
 
+        public async Task<AllCardResponse> GetAllCard()
+        {
+            var allCardResponse = await _cardRepoAllCard.GetAllCard();
+            _logger.LogInformation("Business: All cards retrieved from the database");
+            return allCardResponse;
+        }
+
         public async Task<Card?> GetCardByNameAsync(string name)
         {
             var card = await _cardRepoSingleCard.GetCardByNameAsync(name);
