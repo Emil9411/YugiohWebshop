@@ -7,5 +7,6 @@ namespace Yugioh.Server.Services.BusinessLogic
         Task<AllCardResponse> DatabaseFiller();
         Task<AllCardResponse> DatabaseUpdater();
         Task DatabaseCleaner();
+        Task<AllCardResponse> GetAllCard();
     }
 }
