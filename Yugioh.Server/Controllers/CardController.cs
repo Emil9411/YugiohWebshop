@@ -45,6 +45,19 @@ namespace Yugioh.Server.Controllers
             return Ok("Controller: Database cleaned");
         }
 
+        [HttpGet("allcards")]
+        public async Task<ActionResult> GetAllCards()
+        {
+            var allCard = await _businessAllCard.GetAllCard();
+            if (allCard == null)
+            {
+                _logger.LogError("Controller: Error getting all cards from the database");
+                return NotFound("Controller: Error getting all cards from the database");
+            }
+            _logger.LogInformation("Controller: All cards found");
+            return Ok(allCard);
+        }
+
         [HttpGet("cardbyname")]
         public async Task<ActionResult> GetCardByName([FromQuery] string name)
         {
