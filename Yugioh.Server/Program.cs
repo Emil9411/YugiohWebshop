@@ -1,5 +1,6 @@
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.FileProviders;
+using Microsoft.Net.Http.Headers;
 using Yugioh.Server.Context;
 using Yugioh.Server.Services.Api;
 using Yugioh.Server.Services.BusinessLogic;
@@ -14,6 +15,8 @@ ConfigureSwagger();
 AddDbContext();
 
 var app = builder.Build();
+
+app.UseCors();
 
 app.UseDefaultFiles();
 app.UseStaticFiles();
@@ -55,6 +58,16 @@ void AddServices()
     builder.Services.AddSingleton<IYugiohApiSingleCard, YugiohApi>();
     builder.Services.AddSingleton<IJsonProcessAllCard, YugiohJsonProcessor>();
     builder.Services.AddSingleton<IJsonProcessSingleCard, YugiohJsonProcessor>();
+    // Add CORS services
+    builder.Services.AddCors(options =>
+    {
+        options.AddDefaultPolicy(builder =>
+        {
+            builder.WithOrigins("https://localhost:5173")
+                   .WithHeaders(HeaderNames.ContentType, "x-custom-header")
+                   .WithMethods("PUT", "DELETE", "GET", "PATCH", "POST");
+        });
+    });
 }
 
 void ConfigureSwagger()
