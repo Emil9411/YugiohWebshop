@@ -7,5 +7,6 @@ namespace Yugioh.Server.Services.CardRepository
         Task InitialDatabaseFill(AllCardResponse allCardResponse);
         Task UpdateDatabase(AllCardResponse allCardResponse);
         Task EmptyDatabase();
+        Task<AllCardResponse> GetAllCard();
     }
 }
