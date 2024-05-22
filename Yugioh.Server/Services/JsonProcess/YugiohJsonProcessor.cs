@@ -118,18 +118,38 @@ namespace Yugioh.Server.Services.JsonProcess
 
         private T? GetPropertyValue<T>(JsonElement element, string propertyName)
         {
-            return element.TryGetProperty(propertyName, out var property) ? property.ValueKind switch
+            if (element.TryGetProperty(propertyName, out var property))
             {
-                JsonValueKind.String => (T)(object)property.GetString(),
-                JsonValueKind.Number when typeof(T) == typeof(int) => (T)(object)property.GetInt32(),
-                JsonValueKind.Number when typeof(T) == typeof(double) => (T)(object)property.GetDouble(),
-                _ => default
-            } : default;
+                switch (property.ValueKind)
+                {
+                    case JsonValueKind.String:
+                        if (typeof(T) == typeof(string))
+                            return (T)(object)property.GetString();
+                        break;
+                    case JsonValueKind.Number:
+                        if (typeof(T) == typeof(int))
+                            return (T)(object)property.GetInt32();
+                        if (typeof(T) == typeof(double))
+                            return (T)(object)property.GetDouble();
+                        if (typeof(T) == typeof(long))
+                            return (T)(object)property.GetInt64();
+                        if (typeof(T) == typeof(float))
+                            return (T)(object)property.GetSingle();
+                        break;
+                    case JsonValueKind.True:
+                    case JsonValueKind.False:
+                        if (typeof(T) == typeof(bool))
+                            return (T)(object)property.GetBoolean();
+                        break;
+                }
+            }
+            return default;
         }
+
 
         private T GetPropertyValueFromArray<T>(JsonElement element, string arrayName, int index, string propertyName)
         {
-            if (element.TryGetProperty(arrayName, out var arrayElement) && arrayElement.GetArrayLength() > index)
+            if (element.TryGetProperty(arrayName, out var arrayElement) && arrayElement.ValueKind == JsonValueKind.Array && arrayElement.GetArrayLength() > index)
             {
                 var item = arrayElement[index];
                 return GetPropertyValue<T>(item, propertyName);
@@ -138,9 +158,10 @@ namespace Yugioh.Server.Services.JsonProcess
             return default;
         }
 
+
         private string GetPropertyArrayValues(JsonElement element, string arrayName)
         {
-            if (element.TryGetProperty(arrayName, out var arrayElement))
+            if (element.TryGetProperty(arrayName, out var arrayElement) && arrayElement.ValueKind == JsonValueKind.Array)
             {
                 var values = new List<string>();
                 foreach (var item in arrayElement.EnumerateArray())
@@ -153,16 +174,20 @@ namespace Yugioh.Server.Services.JsonProcess
             return string.Empty;
         }
 
+
         private Card ProcessSingleCard(JsonElement card)
         {
-            var frameType = GetPropertyValue<string>(card, "type");
-            if (frameType == "Spell Card" || frameType == "Trap Card")
+            var type = GetPropertyValue<string>(card, "type");
+            var frameType = GetPropertyValue<string>(card, "frameType");
+            if (string.Equals(type, "Spell Card", StringComparison.OrdinalIgnoreCase) ||
+                string.Equals(type, "Trap Card", StringComparison.OrdinalIgnoreCase) ||
+                string.Equals(type, "Skill Card", StringComparison.OrdinalIgnoreCase))
             {
                 var spellAndTrapCard = new SpellAndTrapCard
                 {
                     CardId = GetPropertyValue<int>(card, "id"),
                     Name = GetPropertyValue<string>(card, "name"),
-                    Type = GetPropertyValue<string>(card, "type"),
+                    Type = type,
                     FrameType = frameType,
                     Description = GetPropertyValue<string>(card, "desc"),
                     Race = GetPropertyValue<string>(card, "race"),
@@ -184,7 +209,7 @@ namespace Yugioh.Server.Services.JsonProcess
                 {
                     CardId = GetPropertyValue<int>(card, "id"),
                     Name = GetPropertyValue<string>(card, "name"),
-                    Type = GetPropertyValue<string>(card, "type"),
+                    Type = type,
                     FrameType = frameType,
                     Description = GetPropertyValue<string>(card, "desc"),
                     Race = GetPropertyValue<string>(card, "race"),
