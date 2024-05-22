@@ -33,7 +33,7 @@ function CardComponent(props) {
             </button>
             <div className={`card-body ${cardBodyHidden ? 'hidden' : ''}`}>
                 <p>Card text: {card.description}</p>
-                <p>ATK: {card.attack}</p>
+                {card.attack ? <p>ATK: {card.attack}</p> : null}
                 {card.defense ? <p>DEF: {card.defense}</p> : null}
                 {card.level ? <p>Level: {card.level}</p> : null}
                 {card.scale ? <p>Scale: {card.scale}</p> : null}
