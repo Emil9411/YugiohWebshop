@@ -1,24 +1,28 @@
 import React, { useState, useEffect } from 'react';
 import CardComponent from '../components/CardComponent';
 import '../index.css';
-import '../components/CardComponent.css';
+import '../components/Component.css';
 
 function AllCardsPage() {
     const testCardObject = {
-        id: 1,
-        cardId: 89631139,
-        name: 'Blue-Eyes White Dragon',
-        type: 'Normal Monster',
-        frameType: 'normal',
-        desc: 'This legendary dragon is a powerful engine of destruction. Virtually invincible, very few have faced this awesome creature and lived to tell the tale.',
-        atk: 3000,
-        def: 2500,
-        level: 8,
-        race: 'Dragon',
-        attribute: 'LIGHT',
-        archetype: 'Blue-Eyes',
-        price: 0.35,
-        ygouProDeckUrl: 'https://ygoprodeck.com/card/blue-eyes-white-dragon-7485'
+        "attack": 0,
+        "defense": null,
+        "level": null,
+        "attribute": "WIND",
+        "scale": null,
+        "linkValue": 4,
+        "linkMarkers": "Bottom-Left,Bottom,Bottom-Right,Top",
+        "id": 69516,
+        "cardId": 4280258,
+        "name": "Apollousa, Bow of the Goddess",
+        "type": "Link Monster",
+        "frameType": "link",
+        "race": "Fairy",
+        "archetype": null,
+        "description": "2+ monsters with different names, except Tokens\r\nYou can only control 1 \"Apollousa, Bow of the Goddess\". The original ATK of this card becomes 800 x the number of Link Materials used for its Link Summon. Once per Chain, when your opponent activates a monster effect (Quick Effect): You can make this card lose exactly 800 ATK, and if you do, negate the activation.",
+        "ygoProDeckUrl": "https://ygoprodeck.com/card/apollousa-bow-of-the-goddess-10242",
+        "imageUrl": "https://images.ygoprodeck.com/images/cards/4280258.jpg",
+        "price": "4.02"
     };
     const [cards, setCards] = useState([testCardObject, testCardObject, testCardObject, testCardObject, testCardObject]);
 
