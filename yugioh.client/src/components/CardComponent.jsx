@@ -1,9 +1,11 @@
 import { useState } from 'react';
-import './CardComponent.css';
+import './Component.css';
+import Directions from './Directions';
 
 function CardComponent(props) {
     const [card, setCard] = useState(props.cardData)
     const [cardBodyHidden, setCardBodyHidden] = useState(true)
+        
 
     let cardImageUrl = "https://localhost:7114/YugiohPics/"
     if (card.frameType === "spell" || card.frameType === "trap" || card.frameType === "skill") {
@@ -30,13 +32,16 @@ function CardComponent(props) {
                 {cardBodyHidden ? 'Show details' : 'Hide details'}
             </button>
             <div className={`card-body ${cardBodyHidden ? 'hidden' : ''}`}>
-                <p>Card text: {card.desc}</p>
-                <p>ATK: {card.atk}</p>
-                <p>DEF: {card.def ? card.def : null}</p>
-                <p>Level: {card.level ? card.level : null}</p>
+                <p>Card text: {card.description}</p>
+                <p>ATK: {card.attack}</p>
+                {card.defense ? <p>DEF: {card.defense}</p> : null}
+                {card.level ? <p>Level: {card.level}</p> : null}
+                {card.scale ? <p>Scale: {card.scale}</p> : null}
+                {card.linkValue ? <p>Link Value: {card.linkValue}</p> : null}
+                {card.linkMarkers ? <Directions directionsList={card.linkMarkers} /> : null}
                 <p>Race: {card.race}</p>
                 <p>Attribute: {card.attribute}</p>
-                <p>Archetype: {card.archetype ? card.archetype : null}</p>
+                {card.archetype ? <p>Archetype: {card.archetype}</p> : null}
                 <a href={card.ygouProDeckUrl}>Ygoprodeck link</a>
                 <p>Price: {card.price} $</p>
             </div>
