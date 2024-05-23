@@ -21,9 +21,6 @@ function CardComponent({ cardData }) {
     return (
         <div
             className="card"
-            style={{
-                marginTop: window.innerWidth > 768 ? '200px' : (cardBodyHidden ? '100px' : '20px')
-            }}
         >
             <div className="card-header">
                 <h2>{card.name}</h2>
