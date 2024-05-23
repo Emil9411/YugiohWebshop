@@ -86,20 +86,31 @@ function AllCardsPage() {
     }
 
     return (
-        <div className="card-container">
-            {currentCards.map((card, i) => (
-                <div key={i} className="card-wrapper">
-                    <CardComponent cardData={card} />
-                </div>
-            ))}
+        <>
+            <br />
+            <h1>All Cards</h1>
+            <br />
             <div className="pagination">
                 <button onClick={() => { setCurrentPage(1); window.scrollTo(0, 0); }} disabled={currentPage === 1}>First</button>
                 <button onClick={() => handlePageChange(currentPage - 1)} disabled={currentPage === 1}>Previous</button>
                 {renderPageButtons()}
                 <button onClick={() => handlePageChange(currentPage + 1)} disabled={currentPage === pagesCount}>Next</button>
                 <button onClick={() => { setCurrentPage(pagesCount); window.scrollTo(0, 0); }} disabled={currentPage === pagesCount}>Last</button>
+            </div><div className="card-container">
+                {currentCards.map((card, i) => (
+                    <div key={i} className="card-wrapper">
+                        <CardComponent cardData={card} />
+                    </div>
+                ))}
+                <div className="pagination">
+                    <button onClick={() => { setCurrentPage(1); window.scrollTo(0, 0); }} disabled={currentPage === 1}>First</button>
+                    <button onClick={() => handlePageChange(currentPage - 1)} disabled={currentPage === 1}>Previous</button>
+                    {renderPageButtons()}
+                    <button onClick={() => handlePageChange(currentPage + 1)} disabled={currentPage === pagesCount}>Next</button>
+                    <button onClick={() => { setCurrentPage(pagesCount); window.scrollTo(0, 0); }} disabled={currentPage === pagesCount}>Last</button>
+                </div>
             </div>
-        </div>
+        </>
     );
 }
 
