@@ -1,19 +1,22 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import './Component.css';
 import Directions from './Directions';
 
-function CardComponent(props) {
-    const [card, setCard] = useState(props.cardData)
-    const [cardBodyHidden, setCardBodyHidden] = useState(true)
-        
+function CardComponent({ cardData }) {
+    const [card, setCard] = useState(cardData);
+    const [cardBodyHidden, setCardBodyHidden] = useState(true);
 
-    let cardImageUrl = "https://localhost:7114/YugiohPics/"
+    useEffect(() => {
+        setCard(cardData);
+    }, [cardData]);
+
+    let cardImageUrl = "https://localhost:7114/YugiohPics/";
     if (card.frameType === "spell" || card.frameType === "trap" || card.frameType === "skill") {
-        cardImageUrl += "SpellAndTrapCards/"
+        cardImageUrl += "SpellAndTrapCards/";
     } else {
-        cardImageUrl += "MonsterCards/"
+        cardImageUrl += "MonsterCards/";
     }
-    cardImageUrl += card.cardId + ".jpg"
+    cardImageUrl += card.cardId + ".jpg";
 
     return (
         <div
