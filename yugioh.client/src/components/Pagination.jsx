@@ -1,5 +1,3 @@
-import React from 'react';
-
 function Pagination({ currentPage, pagesCount, handlePageChange, maxPageButtons }) {
     const renderPageButtons = () => {
         const buttons = [];
