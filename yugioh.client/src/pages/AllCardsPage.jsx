@@ -2,6 +2,7 @@ import { useState, useEffect } from 'react';
 import CardComponent from '../components/CardComponent';
 import Pagination from '../components/Pagination';
 import SelectFilter from '../components/SelectFilter';
+import SearchBar from '../components/SearchBar';
 import '../index.css';
 import '../components/Component.css';
 
@@ -10,7 +11,8 @@ function AllCardsPage() {
     const [filteredCards, setFilteredCards] = useState([]);
     const [loading, setLoading] = useState(true);
     const [typeList, setTypeList] = useState([]);
-
+    const [searchTerm, setSearchTerm] = useState('');
+    const [selectedType, setSelectedType] = useState('All');
     const [currentCards, setCurrentCards] = useState([]);
     const [currentPage, setCurrentPage] = useState(1);
 
@@ -49,6 +51,18 @@ function AllCardsPage() {
         setCurrentCards(filteredCards.slice(indexOfFirstCard, indexOfLastCard));
     }, [currentPage, filteredCards]);
 
+    useEffect(() => {
+        let filtered = cards;
+        if (selectedType !== 'All') {
+            filtered = filtered.filter((card) => card.type === selectedType);
+        }
+        if (searchTerm) {
+            filtered = filtered.filter((card) => card.name.toLowerCase().includes(searchTerm.toLowerCase()));
+        }
+        setFilteredCards(filtered);
+        setCurrentPage(1);
+    }, [selectedType, searchTerm, cards]);
+
     const pagesCount = Math.ceil(filteredCards.length / cardsPerPage);
 
     function handlePageChange(pageNumber) {
@@ -56,17 +70,22 @@ function AllCardsPage() {
             setCurrentPage(pageNumber);
             window.scrollTo(0, 0);
         }
-    };
+    }
 
     function handleFilterChange(event) {
-        const selectedType = event.target.value;
-        if (selectedType === 'All') {
-            setFilteredCards(cards);
-        } else {
-            const filtered = cards.filter((card) => card.type === selectedType);
-            setFilteredCards(filtered);
-        }
-        setCurrentPage(1);
+        setSelectedType(event.target.value);
+    }
+
+    function handleSearchChange(event) {
+        setSearchTerm(event.target.value);
+    }
+
+    function handleClearFilter() {
+        setSelectedType('All');
+    }
+
+    function handleClearSearch() {
+        setSearchTerm('');
     }
 
     if (loading) {
@@ -85,7 +104,34 @@ function AllCardsPage() {
             <br />
             <Pagination currentPage={currentPage} pagesCount={pagesCount} handlePageChange={handlePageChange} maxPageButtons={maxPageButtons} />
             <br />
-            <SelectFilter optionsList={typeList} handleChange={handleFilterChange} />
+            <table>
+                <thead>
+                    <tr>
+                        <th>
+                            <h3>Filter by Type:</h3>
+                        </th>
+                        <th>
+                            <SelectFilter optionsList={typeList} handleChange={handleFilterChange} />
+                        </th>
+                        <th>
+                            <button onClick={handleClearFilter}>Clear filter</button>
+                        </th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td>
+                            <h3>Search by Name:</h3>
+                        </td>
+                        <td>
+                            <SearchBar value={searchTerm} onChange={handleSearchChange} placeholder="Search by name" />
+                        </td>
+                        <td>
+                            <button onClick={handleClearSearch}>Clear search</button>
+                        </td>
+                    </tr>
+                </tbody>
+            </table>
             <div className="card-container">
                 {currentCards.map((card, i) => (
                     <div key={i} className="card-wrapper">
