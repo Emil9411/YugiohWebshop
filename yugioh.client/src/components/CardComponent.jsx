@@ -19,18 +19,18 @@ function CardComponent({ cardData }) {
     cardImageUrl += card.cardId + ".jpg";
 
     return (
-        <div
-            className="card"
-        >
-            <div className="card-header">
+        <div className="card">
+            <div className="card-name">
                 <h2>{card.name}</h2>
-                <p>{card.type}</p>
             </div>
-            <img src={cardImageUrl} alt={card.name} />
-            <br />
-            <button onClick={() => setCardBodyHidden(!cardBodyHidden)}>
-                {cardBodyHidden ? 'Show details' : 'Hide details'}
-            </button>
+            <div className="card-basics">
+                <p>{card.type}</p>
+                <img src={cardImageUrl} alt={card.name} />
+                <br />
+                <button onClick={() => setCardBodyHidden(!cardBodyHidden)}>
+                    {cardBodyHidden ? 'Show details' : 'Hide details'}
+                </button>
+            </div>
             <div className={`card-body ${cardBodyHidden ? 'hidden' : ''}`}>
                 <p>Card text: {card.description}</p>
                 {card.attack ? <p>ATK: {card.attack}</p> : null}
