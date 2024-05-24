@@ -8,7 +8,7 @@
     border-radius: 5px;
     padding: 10px;
     box-shadow: 0px 0px 5px 4px black;
-    background-color: rgba(0,0,0,0.5);
+    background-color: rgba(0,0,0,0.65);
     min-height: 630px;
     margin-top: 1rem;
 }
@@ -61,6 +61,21 @@ img {
 }
 
 .direction-wrapper img {
+    width: 40px;
+    height: auto;
+    margin: 0.2rem;
+}
+
+.level-rank-images {
+    display: flex;
+    flex-direction: row;
+    flex-wrap: wrap;
+    justify-content: center;
+    align-items: center;
+    width: 100%;
+}
+
+.level-rank-images img {
     width: 40px;
     height: auto;
     margin: 0.2rem;
