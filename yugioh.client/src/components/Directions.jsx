@@ -4,14 +4,14 @@ function Directions(props) {
     const directions = props.directionsList.split(",");
 
     const directionsImages = {
-        "Top": "public/direction-arrows/up.png",
-        "Bottom": "public/direction-arrows/down.png",
-        "Left": "public/direction-arrows/left.png",
-        "Right": "public/direction-arrows/right.png",
-        "Bottom-Left": "public/direction-arrows/left-down.png",
-        "Bottom-Right": "public/direction-arrows/right-down.png",
-        "Top-Left": "public/direction-arrows/left-up.png",
-        "Top-Right": "public/direction-arrows/right-up.png"
+        "Top": "/direction-arrows/up.png",
+        "Bottom": "/direction-arrows/down.png",
+        "Left": "/direction-arrows/left.png",
+        "Right": "/direction-arrows/right.png",
+        "Bottom-Left": "/direction-arrows/left-down.png",
+        "Bottom-Right": "/direction-arrows/right-down.png",
+        "Top-Left": "/direction-arrows/left-up.png",
+        "Top-Right": "/direction-arrows/right-up.png"
     }
 
     return (
