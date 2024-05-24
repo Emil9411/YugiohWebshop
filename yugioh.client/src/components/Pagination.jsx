@@ -1,9 +1,8 @@
 import React from 'react';
 
-function Pagination({ currentPage, pagesCount, handlePageChange }) {
+function Pagination({ currentPage, pagesCount, handlePageChange, maxPageButtons }) {
     const renderPageButtons = () => {
         const buttons = [];
-        const maxPageButtons = 10; // Maximum number of page buttons to display
         const middleIndex = Math.floor(maxPageButtons / 2);
         let startPage = currentPage - middleIndex;
         let endPage = currentPage + middleIndex;

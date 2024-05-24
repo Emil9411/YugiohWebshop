@@ -60,7 +60,7 @@ function AllCardsPage() {
             <br />
             <h1>All Cards</h1>
             <br />
-            <Pagination currentPage={currentPage} pagesCount={pagesCount} handlePageChange={handlePageChange} />
+            <Pagination currentPage={currentPage} pagesCount={pagesCount} handlePageChange={handlePageChange} maxPageButtons={maxPageButtons} />
             <div className="card-container">
                 {currentCards.map((card, i) => (
                     <div key={i} className="card-wrapper">
@@ -69,7 +69,7 @@ function AllCardsPage() {
                 ))}
             </div>
             <br />
-            <Pagination currentPage={currentPage} pagesCount={pagesCount} handlePageChange={handlePageChange} />
+            <Pagination currentPage={currentPage} pagesCount={pagesCount} handlePageChange={handlePageChange} maxPageButtons={maxPageButtons} />
         </>
     );
 }
