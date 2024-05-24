@@ -1,7 +1,7 @@
 import './Component.css';
 
-function Directions(props) {
-    const directions = props.directionsList.split(",");
+function Directions({ directionsList }) {
+    const directions = directionsList.split(",");
 
     const directionsImages = {
         "Top": "/direction-arrows/up.png",
