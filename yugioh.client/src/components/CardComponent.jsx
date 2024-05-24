@@ -1,6 +1,7 @@
 import { useState, useEffect } from 'react';
-import './Component.css';
 import Directions from './Directions';
+import LevelRank from './LevelRank';
+import './Component.css';
 
 function CardComponent({ cardData }) {
     const [card, setCard] = useState(cardData);
@@ -33,9 +34,9 @@ function CardComponent({ cardData }) {
             </div>
             <div className={`card-body ${cardBodyHidden ? 'hidden' : ''}`}>
                 <p>Card text: {card.description}</p>
-                {card.attack ? <p>ATK: {card.attack}</p> : null}
-                {card.defense ? <p>DEF: {card.defense}</p> : null}
-                {card.level ? <p>Level: {card.level}</p> : null}
+                {card.attack ? <p style={{ color: "firebrick" }}>ATK: {card.attack}</p> : null}
+                {card.defense ? <p style={{ color: "royalblue" }}>DEF: {card.defense}</p> : null}
+                {card.level ? <LevelRank count={card.level} level={card.type.includes("XYZ") ? "rank" : "level" } /> : null}            
                 {card.scale ? <p>Scale: {card.scale}</p> : null}
                 {card.linkValue ? <p>Link Value: {card.linkValue}</p> : null}
                 {card.linkMarkers ? <Directions directionsList={card.linkMarkers} /> : null}
