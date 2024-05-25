@@ -8,5 +8,7 @@ namespace Yugioh.Server.Services.CardRepository
         Task UpdateDatabase(AllCardResponse allCardResponse);
         Task EmptyDatabase();
         Task<AllCardResponse> GetAllCard();
+        Task<List<MonsterCard>> GetAllMonsterCards();
+        Task<List<SpellAndTrapCard>> GetAllSpellCards();
     }
 }
