@@ -9,17 +9,27 @@ import '../components/Component.css';
 function AllCardsPage() {
     const [cards, setCards] = useState([]);
     const [filteredCards, setFilteredCards] = useState([]);
+
     const [loading, setLoading] = useState(true);
+
     const [typeList, setTypeList] = useState([]);
     const [filteredTypeList, setFilteredTypeList] = useState([]);
+    const [selectedType, setSelectedType] = useState('All');
+
     const [archetypeList, setArchetypeList] = useState([]);
     const [filteredArchetypeList, setFilteredArchetypeList] = useState([]);
+    const [selectedArchetype, setSelectedArchetype] = useState('All');
+
     const [attributeList, setAttributeList] = useState([]);
     const [filteredAttributeList, setFilteredAttributeList] = useState([]);
-    const [searchTerm, setSearchTerm] = useState('');
-    const [selectedType, setSelectedType] = useState('All');
-    const [selectedArchetype, setSelectedArchetype] = useState('All');
     const [selectedAttribute, setSelectedAttribute] = useState('ALL');
+
+    const [raceList, setRaceList] = useState([]);
+    const [filteredRaceList, setFilteredRaceList] = useState([]);
+    const [selectedRace, setSelectedRace] = useState('All');
+
+    const [searchTerm, setSearchTerm] = useState('');
+
     const [currentCards, setCurrentCards] = useState([]);
     const [currentPage, setCurrentPage] = useState(1);
 
@@ -31,6 +41,7 @@ function AllCardsPage() {
             const types = [];
             const archetypes = [];
             const attributes = [];
+            const races = [];
             const response = await fetch('https://localhost:7114/api/Card/allcards');
             const data = await response.json();
             const array = data.monsterCards.concat(data.spellAndTrapCards);
@@ -47,16 +58,22 @@ function AllCardsPage() {
                 if (card.attribute && !attributes.includes(card.attribute)) {
                     attributes.push(card.attribute);
                 }
+                if (card.race && !races.includes(card.race)) {
+                    races.push(card.race);
+                }
             });
             types.sort();
             archetypes.sort();
             attributes.sort();
+            races.sort();
             setTypeList(['All', ...types]);
             setFilteredTypeList(['All', ...types]);
             setArchetypeList(['All', ...archetypes]);
             setFilteredArchetypeList(['All', ...archetypes]);
             setAttributeList(['ALL', ...attributes]);
             setFilteredAttributeList(['ALL', ...attributes]);
+            setRaceList(['All', ...races]);
+            setFilteredRaceList(['All', ...races]);
             setLoading(false);
         } catch (error) {
             console.error(error);
@@ -78,6 +95,7 @@ function AllCardsPage() {
         let filteredTypes = typeList;
         let filteredArchetypes = archetypeList;
         let filteredAttributes = attributeList;
+        let filteredRaces = raceList;
         if (selectedType !== 'All') {
             filtered = filtered.filter((card) => card.type === selectedType);
         }
@@ -87,18 +105,23 @@ function AllCardsPage() {
         if (selectedAttribute !== 'ALL') {
             filtered = filtered.filter((card) => card.attribute === selectedAttribute);
         }
+        if (selectedRace !== 'All') {
+            filtered = filtered.filter((card) => card.race === selectedRace);
+        }
         if (searchTerm) {
             filtered = filtered.filter((card) => card.name.toLowerCase().includes(searchTerm.toLowerCase()));
         }
         setFilteredCards(filtered);
-        filteredTypes = ['All'].concat([...new Set(filtered.map((card) => card.type))].sort());
+        filteredTypes = ['All'].concat([...new Set(filtered.map((card) => card.type))].filter(Boolean).sort());
         filteredArchetypes = ['All'].concat([...new Set(filtered.map((card) => card.archetype).filter(Boolean))].sort());
         filteredAttributes = ['ALL'].concat([...new Set(filtered.map((card) => card.attribute).filter(Boolean))].sort());
+        filteredRaces = ['All'].concat([...new Set(filtered.map((card) => card.race).filter(Boolean))].sort());
         setFilteredTypeList(filteredTypes);
         setFilteredArchetypeList(filteredArchetypes);
         setFilteredAttributeList(filteredAttributes);
+        setFilteredRaceList(filteredRaces);
         setCurrentPage(1);
-    }, [selectedType, searchTerm, cards, selectedArchetype, typeList, archetypeList, selectedAttribute, attributeList]);
+    }, [selectedType, searchTerm, cards, selectedArchetype, typeList, archetypeList, selectedAttribute, attributeList, selectedRace, raceList]);
 
 
     const pagesCount = Math.ceil(filteredCards.length / cardsPerPage);
@@ -122,6 +145,10 @@ function AllCardsPage() {
         setSelectedAttribute(event.target.value);
     }
 
+    function handleRaceFilterChange(event) {
+        setSelectedRace(event.target.value);
+    }
+
     function handleSearchChange(event) {
         setSearchTerm(event.target.value);
     }
@@ -130,6 +157,7 @@ function AllCardsPage() {
         setSelectedType(typeList[0]);
         setSelectedArchetype(archetypeList[0]);
         setSelectedAttribute(attributeList[0]);
+        setSelectedRace(raceList[0]);
     }
 
     function handleClearSearch() {
@@ -165,6 +193,9 @@ function AllCardsPage() {
                             <h3>Attribute:</h3>
                         </th>
                         <th>
+                            <h3>Race:</h3>
+                        </th>
+                        <th>
                             <h3>Search by Name:</h3>
                         </th>
                     </tr>
@@ -181,11 +212,14 @@ function AllCardsPage() {
                             <SelectFilter optionsList={filteredAttributeList} handleChange={handleAttributeFilterChange} selectedValue={selectedAttribute} />
                         </td>
                         <td>
+                            <SelectFilter optionsList={filteredRaceList} handleChange={handleRaceFilterChange} selectedValue={selectedRace} />
+                        </td>
+                        <td>
                             <SearchBar value={searchTerm} onChange={handleSearchChange} placeholder="Search by name" />
                         </td>
                     </tr>
                     <tr>
-                        <td colSpan="3">
+                        <td colSpan="4">
                             <button onClick={handleClearFilters}>Clear filters</button>
                         </td>
                         <td>
