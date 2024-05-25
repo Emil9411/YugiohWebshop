@@ -9,6 +9,7 @@
         public string? FrameType { get; set; }
         public string? Race { get; set; }
         public string? Archetype { get; set; }
+        public string? Attribute { get; set; }
         public string? Description { get; set; }
         public string? YgoProDeckUrl { get; set; }
         public string? ImageUrl { get; set; }
