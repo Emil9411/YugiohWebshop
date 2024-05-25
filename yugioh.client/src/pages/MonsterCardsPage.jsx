@@ -28,6 +28,16 @@ function MonsterCardsPage() {
     const [filteredRaceList, setFilteredRaceList] = useState([]);
     const [selectedRace, setSelectedRace] = useState('All');
 
+    const [levelList, setLevelList] = useState([]);
+    const [filteredLevelList, setFilteredLevelList] = useState([]);
+    const [selectedLevel, setSelectedLevel] = useState('All');
+
+    const [minAttack, setMinAttack] = useState(null);
+    const [maxAttack, setMaxAttack] = useState(null);
+
+    const [minDefense, setMinDefense] = useState(null);
+    const [maxDefense, setMaxDefense] = useState(null);
+
     const [searchTerm, setSearchTerm] = useState('');
 
     const [currentCards, setCurrentCards] = useState([]);
@@ -42,9 +52,9 @@ function MonsterCardsPage() {
             const archetypes = [];
             const attributes = [];
             const races = [];
-            const response = await fetch('https://localhost:7114/api/Card/allcards'); // there should be another endpoint for monster cards only. right now this will do the job.
-            const data = await response.json();
-            const array = data.monsterCards;
+            const levels = [];
+            const response = await fetch('https://localhost:7114/api/Card/allmonstercards');
+            const array = await response.json();
             array.sort((a, b) => a.name.localeCompare(b.name));
             setCards(array);
             setFilteredCards(array);
@@ -61,11 +71,15 @@ function MonsterCardsPage() {
                 if (card.race && !races.includes(card.race)) {
                     races.push(card.race);
                 }
+                if (card.level && !levels.includes(card.level)) {
+                    levels.push(card.level);
+                }
             });
             types.sort();
             archetypes.sort();
             attributes.sort();
             races.sort();
+            levels.sort((a, b) => a - b);
             setTypeList(['All', ...types]);
             setFilteredTypeList(['All', ...types]);
             setArchetypeList(['All', ...archetypes]);
@@ -74,6 +88,8 @@ function MonsterCardsPage() {
             setFilteredAttributeList(['ALL', ...attributes]);
             setRaceList(['All', ...races]);
             setFilteredRaceList(['All', ...races]);
+            setLevelList(['All', ...levels]);
+            setFilteredLevelList(['All', ...levels]);
             setLoading(false);
         } catch (error) {
             console.error(error);
@@ -96,6 +112,7 @@ function MonsterCardsPage() {
         let filteredArchetypes = archetypeList;
         let filteredAttributes = attributeList;
         let filteredRaces = raceList;
+        let filteredLevels = levelList;
         if (selectedType !== 'All') {
             filtered = filtered.filter((card) => card.type === selectedType);
         }
@@ -108,6 +125,21 @@ function MonsterCardsPage() {
         if (selectedRace !== 'All') {
             filtered = filtered.filter((card) => card.race === selectedRace);
         }
+        if (selectedLevel != 'All') {
+            filtered = filtered.filter((card) => card.level == selectedLevel);
+        }
+        if (minAttack) {
+            filtered = filtered.filter((card) => card.attack >= minAttack);
+        }
+        if (maxAttack) {
+            filtered = filtered.filter((card) => card.attack <= maxAttack);
+        }
+        if (minDefense) {
+            filtered = filtered.filter((card) => card.defense >= minDefense);
+        }
+        if (maxDefense) {
+            filtered = filtered.filter((card) => card.defense <= maxDefense);
+        }
         if (searchTerm) {
             filtered = filtered.filter((card) => card.name.toLowerCase().includes(searchTerm.toLowerCase()));
         }
@@ -116,12 +148,14 @@ function MonsterCardsPage() {
         filteredArchetypes = ['All'].concat([...new Set(filtered.map((card) => card.archetype).filter(Boolean))].sort());
         filteredAttributes = ['ALL'].concat([...new Set(filtered.map((card) => card.attribute).filter(Boolean))].sort());
         filteredRaces = ['All'].concat([...new Set(filtered.map((card) => card.race).filter(Boolean))].sort());
+        filteredLevels = ['All'].concat([...new Set(filtered.map((card) => card.level).filter(Boolean))].sort((a, b) => a - b));
         setFilteredTypeList(filteredTypes);
         setFilteredArchetypeList(filteredArchetypes);
         setFilteredAttributeList(filteredAttributes);
         setFilteredRaceList(filteredRaces);
+        setFilteredLevelList(filteredLevels);
         setCurrentPage(1);
-    }, [selectedType, searchTerm, cards, selectedArchetype, typeList, archetypeList, selectedAttribute, attributeList, selectedRace, raceList]);
+    }, [selectedType, searchTerm, cards, selectedArchetype, typeList, archetypeList, selectedAttribute, attributeList, selectedRace, raceList, selectedLevel, levelList, minAttack, maxAttack, minDefense, maxDefense]);
 
 
     const pagesCount = Math.ceil(filteredCards.length / cardsPerPage);
@@ -149,8 +183,28 @@ function MonsterCardsPage() {
         setSelectedRace(event.target.value);
     }
 
+    function handleLevelFilterChange(event) {
+        setSelectedLevel(event.target.value);
+    }
+
+    function handleMinAttackChange(event) {
+        setMinAttack(event.target.value);
+    }
+
+    function handleMaxAttackChange(event) {
+        setMaxAttack(event.target.value);
+    }
+
     function handleSearchChange(event) {
         setSearchTerm(event.target.value);
+    }
+
+    function handleMinDefenseChange(event) {
+        setMinDefense(event.target.value);
+    }
+
+    function handleMaxDefenseChange(event) {
+        setMaxDefense(event.target.value);
     }
 
     function handleClearFilters() {
@@ -158,6 +212,11 @@ function MonsterCardsPage() {
         setSelectedArchetype(archetypeList[0]);
         setSelectedAttribute(attributeList[0]);
         setSelectedRace(raceList[0]);
+        setSelectedLevel(levelList[0]);
+        setMinAttack('');
+        setMaxAttack('');
+        setMinDefense('');
+        setMaxDefense('');
     }
 
     function handleClearSearch() {
@@ -196,6 +255,9 @@ function MonsterCardsPage() {
                             <h3>Race:</h3>
                         </th>
                         <th>
+                            <h3>Level:</h3>
+                        </th>
+                        <th>
                             <h3>Search by Name:</h3>
                         </th>
                     </tr>
@@ -215,15 +277,52 @@ function MonsterCardsPage() {
                             <SelectFilter optionsList={filteredRaceList} handleChange={handleRaceFilterChange} selectedValue={selectedRace} />
                         </td>
                         <td>
+                            <SelectFilter optionsList={filteredLevelList} handleChange={handleLevelFilterChange} selectedValue={selectedLevel} />
+                        </td>
+                        <td>
                             <SearchBar value={searchTerm} onChange={handleSearchChange} placeholder="Search by name" />
                         </td>
                     </tr>
                     <tr>
-                        <td colSpan="4">
-                            <button onClick={handleClearFilters}>Clear filters</button>
+                        <td>
+                            <h3>Minimum ATK:</h3>
+                        </td>
+                        <td>
+                            <h3>Maximum ATK:</h3>
+                        </td>
+                        <td>
+                            <h3>Minimum DEF:</h3>
+                        </td>
+                        <td>
+                            <h3>Maximum DEF:</h3>
+                        </td>
+                        <td>
                         </td>
                         <td>
                             <button onClick={handleClearSearch}>Clear search</button>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td>
+                            <input type="number" value={minAttack || ''} onChange={handleMinAttackChange} />
+                        </td>
+                        <td>
+                            <input type="number" value={maxAttack || ''} onChange={handleMaxAttackChange} />
+                        </td>
+                        <td>
+                            <input type="number" value={minDefense || ''} onChange={handleMinDefenseChange} />
+                        </td>
+                        <td>
+                            <input type="number" value={maxDefense || ''} onChange={handleMaxDefenseChange} />
+                        </td>
+                        <td colSpan="2">
+                        </td>
+                    </tr>
+                    <tr>
+                        <td colSpan="5">
+                            <button onClick={handleClearFilters}>Clear filters</button>
+                        </td>
+                        <td>
                         </td>
                     </tr>
                 </tbody>
