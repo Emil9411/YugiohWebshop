@@ -38,7 +38,9 @@ function App() {
                     <Link to="/all">
                         <button>All cards</button>
                     </Link>
-                    <button>Monster cards</button>
+                    <Link to="/monsters">
+                        <button>Monster cards</button>
+                    </Link>
                     <button>Spell/Trap cards</button>
                     <button>Register</button>
                     <button>Login</button>
