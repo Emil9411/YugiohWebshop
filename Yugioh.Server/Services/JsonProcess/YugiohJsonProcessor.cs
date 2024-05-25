@@ -191,6 +191,7 @@ namespace Yugioh.Server.Services.JsonProcess
                     FrameType = frameType,
                     Description = GetPropertyValue<string>(card, "desc"),
                     Race = GetPropertyValue<string>(card, "race"),
+                    Attribute = frameType == "spell" ? "SPELL" : frameType == "trap" ? "TRAP" : null,
                     Archetype = GetPropertyValue<string>(card, "archetype"),
                     YgoProDeckUrl = GetPropertyValue<string>(card, "ygoprodeck_url"),
                     ImageUrl = GetPropertyValueFromArray<string>(card, "card_images", 0, "image_url")
