@@ -45,7 +45,7 @@ function CardComponent({ cardData }) {
                 <p>Race: {card.race}</p>
                 {card.attribute ? <Attributes attribute={card.attribute} /> : null}
                 {card.archetype ? <p>Archetype: {card.archetype}</p> : null}
-                <a href={card.ygouProDeckUrl}>YGOPRODeck link</a>
+                <a href={card.ygoProDeckUrl}>YGOPRODeck link</a>
                 <p>Price: {card.price} $</p>
             </div>
         </div>
