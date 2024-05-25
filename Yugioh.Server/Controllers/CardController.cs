@@ -58,6 +58,32 @@ namespace Yugioh.Server.Controllers
             return Ok(allCard);
         }
 
+        [HttpGet("allmonstercards")]
+        public async Task<ActionResult> GetAllMonsterCards()
+        {
+            var allMonsterCards = await _businessAllCard.GetAllMonsterCards();
+            if (allMonsterCards == null)
+            {
+                _logger.LogError("Controller: Error getting all monster cards from the database");
+                return NotFound("Controller: Error getting all monster cards from the database");
+            }
+            _logger.LogInformation("Controller: All monster cards found");
+            return Ok(allMonsterCards);
+        }
+
+        [HttpGet("allspellcards")]
+        public async Task<ActionResult> GetAllSpellCards()
+        {
+            var allSpellCards = await _businessAllCard.GetAllSpellCards();
+            if (allSpellCards == null)
+            {
+                _logger.LogError("Controller: Error getting all spell cards from the database");
+                return NotFound("Controller: Error getting all spell cards from the database");
+            }
+            _logger.LogInformation("Controller: All spell cards found");
+            return Ok(allSpellCards);
+        }
+
         [HttpGet("cardbyname")]
         public async Task<ActionResult> GetCardByName([FromQuery] string name)
         {
