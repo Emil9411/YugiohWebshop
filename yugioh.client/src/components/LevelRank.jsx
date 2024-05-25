@@ -1,7 +1,7 @@
 function LevelRank({ count, level }) {
     const levelImages = {
-        "level": "level.png",
-        "rank": "rank.png"
+        "level": "/stars/level.png",
+        "rank": "/stars/rank.png"
     };
 
     const imageUrl = levelImages[level];

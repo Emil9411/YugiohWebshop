@@ -12,11 +12,11 @@
 }
 
     :root.wide-bg {
-        --background-image: url(/wide-bg.jpg);
+        --background-image: url(/main/wide-bg.jpg);
     }
 
     :root.narrow-bg {
-        --background-image: url(/narrow-bg.jpg);
+        --background-image: url(/main/narrow-bg.jpg);
     }
 
 .header {
