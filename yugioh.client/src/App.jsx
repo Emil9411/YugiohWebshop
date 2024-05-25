@@ -2,6 +2,7 @@ import { useEffect, useState } from 'react';
 import { Outlet, Link, useLocation } from "react-router-dom";
 import './index.css';
 function App() {
+    const location = useLocation();
 
     const updateBackgroundClass = () => {
         const width = window.innerWidth;
@@ -33,13 +34,13 @@ function App() {
                 </div>
                 <div className="header-buttons">
                     <Link to="/">
-                        <button>Home</button>
+                        <button disabled={location.pathname === '/'}>Home</button>
                     </Link>
                     <Link to="/all">
-                        <button>All cards</button>
+                        <button disabled={location.pathname === '/all'}>All cards</button>
                     </Link>
                     <Link to="/monsters">
-                        <button>Monster cards</button>
+                        <button disabled={location.pathname === '/monsters'}>Monster cards</button>
                     </Link>
                     <button>Spell/Trap cards</button>
                     <button>Register</button>
