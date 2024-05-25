@@ -4,6 +4,7 @@ import { createBrowserRouter, RouterProvider } from "react-router-dom";
 import App from './App.jsx'
 import './index.css'
 import AllCardsPage from './pages/AllCardsPage.jsx'
+import MonsterCardsPage from './pages/MonsterCardsPage.jsx'
 
 const router = createBrowserRouter([
     {
@@ -14,6 +15,10 @@ const router = createBrowserRouter([
                 path: "/all",
                 element: <AllCardsPage />,
             },
+            {
+                path: "/monsters",
+                element: <MonsterCardsPage />,
+            }
         ],
     },
 ]
