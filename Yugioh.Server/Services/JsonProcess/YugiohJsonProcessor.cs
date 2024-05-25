@@ -179,6 +179,7 @@ namespace Yugioh.Server.Services.JsonProcess
         {
             var type = GetPropertyValue<string>(card, "type");
             var frameType = GetPropertyValue<string>(card, "frameType");
+            var archetype = GetPropertyValue<string>(card, "archetype");
             if (string.Equals(type, "Spell Card", StringComparison.OrdinalIgnoreCase) ||
                 string.Equals(type, "Trap Card", StringComparison.OrdinalIgnoreCase) ||
                 string.Equals(type, "Skill Card", StringComparison.OrdinalIgnoreCase))
@@ -192,7 +193,7 @@ namespace Yugioh.Server.Services.JsonProcess
                     Description = GetPropertyValue<string>(card, "desc"),
                     Race = GetPropertyValue<string>(card, "race"),
                     Attribute = frameType == "spell" ? "SPELL" : frameType == "trap" ? "TRAP" : null,
-                    Archetype = GetPropertyValue<string>(card, "archetype"),
+                    Archetype = archetype == "roid" ? "Roid" : archetype == "tellarknight" ? "Tellarknight" : archetype == "with Eyes of Blue" ? "Blue-Eyes" : archetype,
                     YgoProDeckUrl = GetPropertyValue<string>(card, "ygoprodeck_url"),
                     ImageUrl = GetPropertyValueFromArray<string>(card, "card_images", 0, "image_url")
                 };
@@ -214,7 +215,7 @@ namespace Yugioh.Server.Services.JsonProcess
                     FrameType = frameType,
                     Description = GetPropertyValue<string>(card, "desc"),
                     Race = GetPropertyValue<string>(card, "race"),
-                    Archetype = GetPropertyValue<string>(card, "archetype"),
+                    Archetype = archetype == "roid" ? "Roid" : archetype == "tellarknight" ? "Tellarknight" : archetype,
                     YgoProDeckUrl = GetPropertyValue<string>(card, "ygoprodeck_url"),
                     ImageUrl = GetPropertyValueFromArray<string>(card, "card_images", 0, "image_url"),
                     Attack = GetPropertyValue<int>(card, "atk"),
