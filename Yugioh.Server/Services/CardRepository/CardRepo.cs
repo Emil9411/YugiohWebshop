@@ -117,6 +117,20 @@ namespace Yugioh.Server.Services.CardRepository
             return allCardResponse;
         }
 
+        public async Task<List<MonsterCard>> GetAllMonsterCards()
+        {
+            var monsterCards = await _context.MonsterCards.ToListAsync();
+            _logger.LogInformation("Repository: All monster cards retrieved from the database");
+            return monsterCards;
+        }
+
+        public async Task<List<SpellAndTrapCard>> GetAllSpellCards()
+        {
+            var spellAndTrapCards = await _context.SpellAndTrapCards.ToListAsync();
+            _logger.LogInformation("Repository: All spell and trap cards retrieved from the database");
+            return spellAndTrapCards;
+        }
+
         public async Task<Card?> GetCardByNameAsync(string name)
         {
             var monsterCard = await _context.MonsterCards.FirstOrDefaultAsync(c => c.Name == name);
