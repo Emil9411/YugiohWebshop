@@ -11,10 +11,15 @@ function AllCardsPage() {
     const [filteredCards, setFilteredCards] = useState([]);
     const [loading, setLoading] = useState(true);
     const [typeList, setTypeList] = useState([]);
+    const [filteredTypeList, setFilteredTypeList] = useState([]);
     const [archetypeList, setArchetypeList] = useState([]);
+    const [filteredArchetypeList, setFilteredArchetypeList] = useState([]);
     const [attributeList, setAttributeList] = useState([]);
+    const [filteredAttributeList, setFilteredAttributeList] = useState([]);
     const [searchTerm, setSearchTerm] = useState('');
     const [selectedType, setSelectedType] = useState('All');
+    const [selectedArchetype, setSelectedArchetype] = useState('All');
+    const [selectedAttribute, setSelectedAttribute] = useState('ALL');
     const [currentCards, setCurrentCards] = useState([]);
     const [currentPage, setCurrentPage] = useState(1);
 
@@ -44,9 +49,14 @@ function AllCardsPage() {
                 }
             });
             types.sort();
-            setTypeList(['All', ...types])
+            archetypes.sort();
+            attributes.sort();
+            setTypeList(['All', ...types]);
+            setFilteredTypeList(['All', ...types]);
             setArchetypeList(['All', ...archetypes]);
+            setFilteredArchetypeList(['All', ...archetypes]);
             setAttributeList(['ALL', ...attributes]);
+            setFilteredAttributeList(['ALL', ...attributes]);
             setLoading(false);
         } catch (error) {
             console.error(error);
@@ -65,15 +75,31 @@ function AllCardsPage() {
 
     useEffect(() => {
         let filtered = cards;
+        let filteredTypes = typeList;
+        let filteredArchetypes = archetypeList;
+        let filteredAttributes = attributeList;
         if (selectedType !== 'All') {
             filtered = filtered.filter((card) => card.type === selectedType);
+        }
+        if (selectedArchetype !== 'All') {
+            filtered = filtered.filter((card) => card.archetype === selectedArchetype);
+        }
+        if (selectedAttribute !== 'ALL') {
+            filtered = filtered.filter((card) => card.attribute === selectedAttribute);
         }
         if (searchTerm) {
             filtered = filtered.filter((card) => card.name.toLowerCase().includes(searchTerm.toLowerCase()));
         }
         setFilteredCards(filtered);
+        filteredTypes = ['All'].concat([...new Set(filtered.map((card) => card.type))].sort());
+        filteredArchetypes = ['All'].concat([...new Set(filtered.map((card) => card.archetype).filter(Boolean))].sort());
+        filteredAttributes = ['ALL'].concat([...new Set(filtered.map((card) => card.attribute).filter(Boolean))].sort());
+        setFilteredTypeList(filteredTypes);
+        setFilteredArchetypeList(filteredArchetypes);
+        setFilteredAttributeList(filteredAttributes);
         setCurrentPage(1);
-    }, [selectedType, searchTerm, cards]);
+    }, [selectedType, searchTerm, cards, selectedArchetype, typeList, archetypeList, selectedAttribute, attributeList]);
+
 
     const pagesCount = Math.ceil(filteredCards.length / cardsPerPage);
 
@@ -84,16 +110,26 @@ function AllCardsPage() {
         }
     }
 
-    function handleFilterChange(event) {
+    function handleTypeFilterChange(event) {
         setSelectedType(event.target.value);
+    }
+
+    function handleArchetypeFilterChange(event) {
+        setSelectedArchetype(event.target.value);
+    }
+
+    function handleAttributeFilterChange(event) {
+        setSelectedAttribute(event.target.value);
     }
 
     function handleSearchChange(event) {
         setSearchTerm(event.target.value);
     }
 
-    function handleClearFilter() {
-        setSelectedType('All');
+    function handleClearFilters() {
+        setSelectedType(typeList[0]);
+        setSelectedArchetype(archetypeList[0]);
+        setSelectedAttribute(attributeList[0]);
     }
 
     function handleClearSearch() {
@@ -120,23 +156,37 @@ function AllCardsPage() {
                 <thead>
                     <tr>
                         <th>
-                            <h3>Filter by Type:</h3>
+                            <h3>Type:</h3>
                         </th>
                         <th>
-                            <SelectFilter optionsList={typeList} handleChange={handleFilterChange} />
+                            <h3>Archetype:</h3>
                         </th>
                         <th>
-                            <button onClick={handleClearFilter}>Clear filter</button>
+                            <h3>Attribute:</h3>
+                        </th>
+                        <th>
+                            <h3>Search by Name:</h3>
                         </th>
                     </tr>
                 </thead>
                 <tbody>
                     <tr>
                         <td>
-                            <h3>Search by Name:</h3>
+                            <SelectFilter optionsList={filteredTypeList} handleChange={handleTypeFilterChange} selectedValue={selectedType} />
+                        </td>
+                        <td>
+                            <SelectFilter optionsList={filteredArchetypeList} handleChange={handleArchetypeFilterChange} selectedValue={selectedArchetype} />
+                        </td>
+                        <td>
+                            <SelectFilter optionsList={filteredAttributeList} handleChange={handleAttributeFilterChange} selectedValue={selectedAttribute} />
                         </td>
                         <td>
                             <SearchBar value={searchTerm} onChange={handleSearchChange} placeholder="Search by name" />
+                        </td>
+                    </tr>
+                    <tr>
+                        <td colSpan="3">
+                            <button onClick={handleClearFilters}>Clear filters</button>
                         </td>
                         <td>
                             <button onClick={handleClearSearch}>Clear search</button>
