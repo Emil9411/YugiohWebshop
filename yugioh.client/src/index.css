@@ -93,6 +93,11 @@ h1 {
     line-height: 1.1;
 }
 
+th, td {
+    padding-left: 1rem;
+    padding-right: 1rem;
+}
+
 .spinner {
     border: 16px solid #f3f3f3;
     border-top: 16px solid #3498db;
