@@ -11,6 +11,8 @@ function AllCardsPage() {
     const [filteredCards, setFilteredCards] = useState([]);
     const [loading, setLoading] = useState(true);
     const [typeList, setTypeList] = useState([]);
+    const [archetypeList, setArchetypeList] = useState([]);
+    const [attributeList, setAttributeList] = useState([]);
     const [searchTerm, setSearchTerm] = useState('');
     const [selectedType, setSelectedType] = useState('All');
     const [currentCards, setCurrentCards] = useState([]);
@@ -22,6 +24,8 @@ function AllCardsPage() {
     async function fetchCards() {
         try {
             const types = [];
+            const archetypes = [];
+            const attributes = [];
             const response = await fetch('https://localhost:7114/api/Card/allcards');
             const data = await response.json();
             const array = data.monsterCards.concat(data.spellAndTrapCards);
@@ -32,9 +36,17 @@ function AllCardsPage() {
                 if (!types.includes(card.type)) {
                     types.push(card.type);
                 }
+                if (card.archetype && !archetypes.includes(card.archetype)) {
+                    archetypes.push(card.archetype);
+                }
+                if (card.attribute && !attributes.includes(card.attribute)) {
+                    attributes.push(card.attribute);
+                }
             });
             types.sort();
             setTypeList(['All', ...types])
+            setArchetypeList(['All', ...archetypes]);
+            setAttributeList(['ALL', ...attributes]);
             setLoading(false);
         } catch (error) {
             console.error(error);
