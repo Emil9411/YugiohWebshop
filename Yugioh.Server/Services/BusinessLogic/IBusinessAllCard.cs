@@ -8,5 +8,7 @@ namespace Yugioh.Server.Services.BusinessLogic
         Task<AllCardResponse> DatabaseUpdater();
         Task DatabaseCleaner();
         Task<AllCardResponse> GetAllCard();
+        Task<List<MonsterCard>> GetAllMonsterCards();
+        Task<List<SpellAndTrapCard>> GetAllSpellCards();
     }
 }
