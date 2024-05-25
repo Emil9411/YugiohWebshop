@@ -80,3 +80,16 @@ img {
     height: auto;
     margin: 0.2rem;
 }
+
+.attributes-images {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    width: 100%;
+}
+
+.attributes-images img {
+    height: 50px;
+    width: auto;
+    margin: 1rem;
+}
