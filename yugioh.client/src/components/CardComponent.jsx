@@ -1,6 +1,8 @@
 import { useState, useEffect } from 'react';
 import Directions from './Directions';
 import LevelRank from './LevelRank';
+import Attributes from './Attributes';
+
 import './Component.css';
 
 function CardComponent({ cardData }) {
@@ -41,9 +43,9 @@ function CardComponent({ cardData }) {
                 {card.linkValue ? <p>Link Value: {card.linkValue}</p> : null}
                 {card.linkMarkers ? <Directions directionsList={card.linkMarkers} /> : null}
                 <p>Race: {card.race}</p>
-                <p>Attribute: {card.attribute}</p>
+                {card.attribute ? <Attributes attribute={card.attribute} /> : null}
                 {card.archetype ? <p>Archetype: {card.archetype}</p> : null}
-                <a href={card.ygouProDeckUrl}>Ygoprodeck link</a>
+                <a href={card.ygouProDeckUrl}>YGOPRODeck link</a>
                 <p>Price: {card.price} $</p>
             </div>
         </div>
