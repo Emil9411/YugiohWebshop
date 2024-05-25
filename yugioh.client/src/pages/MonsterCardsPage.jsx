@@ -9,12 +9,27 @@ import '../components/Component.css';
 function MonsterCardsPage() {
     const [cards, setCards] = useState([]);
     const [filteredCards, setFilteredCards] = useState([]);
+
     const [loading, setLoading] = useState(true);
+
     const [typeList, setTypeList] = useState([]);
-    const [archetypeList, setArchetypeList] = useState([]);
-    const [attributeList, setAttributeList] = useState([]);
-    const [searchTerm, setSearchTerm] = useState('');
+    const [filteredTypeList, setFilteredTypeList] = useState([]);
     const [selectedType, setSelectedType] = useState('All');
+
+    const [archetypeList, setArchetypeList] = useState([]);
+    const [filteredArchetypeList, setFilteredArchetypeList] = useState([]);
+    const [selectedArchetype, setSelectedArchetype] = useState('All');
+
+    const [attributeList, setAttributeList] = useState([]);
+    const [filteredAttributeList, setFilteredAttributeList] = useState([]);
+    const [selectedAttribute, setSelectedAttribute] = useState('ALL');
+
+    const [raceList, setRaceList] = useState([]);
+    const [filteredRaceList, setFilteredRaceList] = useState([]);
+    const [selectedRace, setSelectedRace] = useState('All');
+
+    const [searchTerm, setSearchTerm] = useState('');
+
     const [currentCards, setCurrentCards] = useState([]);
     const [currentPage, setCurrentPage] = useState(1);
 
@@ -26,7 +41,8 @@ function MonsterCardsPage() {
             const types = [];
             const archetypes = [];
             const attributes = [];
-            const response = await fetch('https://localhost:7114/api/Card/allcards');
+            const races = [];
+            const response = await fetch('https://localhost:7114/api/Card/allcards'); // there should be another endpoint for monster cards only. right now this will do the job.
             const data = await response.json();
             const array = data.monsterCards;
             array.sort((a, b) => a.name.localeCompare(b.name));
@@ -42,11 +58,22 @@ function MonsterCardsPage() {
                 if (card.attribute && !attributes.includes(card.attribute)) {
                     attributes.push(card.attribute);
                 }
+                if (card.race && !races.includes(card.race)) {
+                    races.push(card.race);
+                }
             });
             types.sort();
-            setTypeList(['All', ...types])
+            archetypes.sort();
+            attributes.sort();
+            races.sort();
+            setTypeList(['All', ...types]);
+            setFilteredTypeList(['All', ...types]);
             setArchetypeList(['All', ...archetypes]);
+            setFilteredArchetypeList(['All', ...archetypes]);
             setAttributeList(['ALL', ...attributes]);
+            setFilteredAttributeList(['ALL', ...attributes]);
+            setRaceList(['All', ...races]);
+            setFilteredRaceList(['All', ...races]);
             setLoading(false);
         } catch (error) {
             console.error(error);
@@ -65,15 +92,37 @@ function MonsterCardsPage() {
 
     useEffect(() => {
         let filtered = cards;
+        let filteredTypes = typeList;
+        let filteredArchetypes = archetypeList;
+        let filteredAttributes = attributeList;
+        let filteredRaces = raceList;
         if (selectedType !== 'All') {
             filtered = filtered.filter((card) => card.type === selectedType);
+        }
+        if (selectedArchetype !== 'All') {
+            filtered = filtered.filter((card) => card.archetype === selectedArchetype);
+        }
+        if (selectedAttribute !== 'ALL') {
+            filtered = filtered.filter((card) => card.attribute === selectedAttribute);
+        }
+        if (selectedRace !== 'All') {
+            filtered = filtered.filter((card) => card.race === selectedRace);
         }
         if (searchTerm) {
             filtered = filtered.filter((card) => card.name.toLowerCase().includes(searchTerm.toLowerCase()));
         }
         setFilteredCards(filtered);
+        filteredTypes = ['All'].concat([...new Set(filtered.map((card) => card.type))].filter(Boolean).sort());
+        filteredArchetypes = ['All'].concat([...new Set(filtered.map((card) => card.archetype).filter(Boolean))].sort());
+        filteredAttributes = ['ALL'].concat([...new Set(filtered.map((card) => card.attribute).filter(Boolean))].sort());
+        filteredRaces = ['All'].concat([...new Set(filtered.map((card) => card.race).filter(Boolean))].sort());
+        setFilteredTypeList(filteredTypes);
+        setFilteredArchetypeList(filteredArchetypes);
+        setFilteredAttributeList(filteredAttributes);
+        setFilteredRaceList(filteredRaces);
         setCurrentPage(1);
-    }, [selectedType, searchTerm, cards]);
+    }, [selectedType, searchTerm, cards, selectedArchetype, typeList, archetypeList, selectedAttribute, attributeList, selectedRace, raceList]);
+
 
     const pagesCount = Math.ceil(filteredCards.length / cardsPerPage);
 
@@ -84,16 +133,31 @@ function MonsterCardsPage() {
         }
     }
 
-    function handleFilterChange(event) {
+    function handleTypeFilterChange(event) {
         setSelectedType(event.target.value);
+    }
+
+    function handleArchetypeFilterChange(event) {
+        setSelectedArchetype(event.target.value);
+    }
+
+    function handleAttributeFilterChange(event) {
+        setSelectedAttribute(event.target.value);
+    }
+
+    function handleRaceFilterChange(event) {
+        setSelectedRace(event.target.value);
     }
 
     function handleSearchChange(event) {
         setSearchTerm(event.target.value);
     }
 
-    function handleClearFilter() {
-        setSelectedType('All');
+    function handleClearFilters() {
+        setSelectedType(typeList[0]);
+        setSelectedArchetype(archetypeList[0]);
+        setSelectedAttribute(attributeList[0]);
+        setSelectedRace(raceList[0]);
     }
 
     function handleClearSearch() {
@@ -120,23 +184,43 @@ function MonsterCardsPage() {
                 <thead>
                     <tr>
                         <th>
-                            <h3>Filter by Type:</h3>
+                            <h3>Type:</h3>
                         </th>
                         <th>
-                            <SelectFilter optionsList={typeList} handleChange={handleFilterChange} selectedValue={selectedType} />
+                            <h3>Archetype:</h3>
                         </th>
                         <th>
-                            <button onClick={handleClearFilter}>Clear filter</button>
+                            <h3>Attribute:</h3>
+                        </th>
+                        <th>
+                            <h3>Race:</h3>
+                        </th>
+                        <th>
+                            <h3>Search by Name:</h3>
                         </th>
                     </tr>
                 </thead>
                 <tbody>
                     <tr>
                         <td>
-                            <h3>Search by Name:</h3>
+                            <SelectFilter optionsList={filteredTypeList} handleChange={handleTypeFilterChange} selectedValue={selectedType} />
+                        </td>
+                        <td>
+                            <SelectFilter optionsList={filteredArchetypeList} handleChange={handleArchetypeFilterChange} selectedValue={selectedArchetype} />
+                        </td>
+                        <td>
+                            <SelectFilter optionsList={filteredAttributeList} handleChange={handleAttributeFilterChange} selectedValue={selectedAttribute} />
+                        </td>
+                        <td>
+                            <SelectFilter optionsList={filteredRaceList} handleChange={handleRaceFilterChange} selectedValue={selectedRace} />
                         </td>
                         <td>
                             <SearchBar value={searchTerm} onChange={handleSearchChange} placeholder="Search by name" />
+                        </td>
+                    </tr>
+                    <tr>
+                        <td colSpan="4">
+                            <button onClick={handleClearFilters}>Clear filters</button>
                         </td>
                         <td>
                             <button onClick={handleClearSearch}>Clear search</button>
