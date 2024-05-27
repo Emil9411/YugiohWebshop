@@ -81,4 +81,8 @@ void AddDbContext()
     {
         options.UseSqlServer(connectionString);
     });
+    builder.Services.AddDbContext<UsersContext>(options =>
+    {
+        options.UseSqlServer(connectionString);
+    });
 }
