@@ -42,7 +42,9 @@ function App() {
                     <Link to="/monsters">
                         <button disabled={location.pathname === '/monsters'}>Monster cards</button>
                     </Link>
-                    <button>Spell/Trap cards</button>
+                    <Link to="/spells">
+                        <button disabled={location.pathname === '/spells'}>Spell/Trap cards</button>
+                    </Link>
                     <button>Register</button>
                     <button>Login</button>
                     <button>Logout</button>
