@@ -29,7 +29,7 @@ namespace Yugioh.Server.Controllers
             return Ok("Controller(Fill): All cards processed and saved to the database");
         }
 
-        [HttpGet("updatedatabase")]
+        [HttpPatch("updatedatabase")]
         public async Task<ActionResult> UpdateDatabase()
         {
             await _businessAllCard.DatabaseUpdater();
@@ -37,7 +37,7 @@ namespace Yugioh.Server.Controllers
             return Ok("Controller(Update): All cards processed and saved to the database");
         }
 
-        [HttpGet("cleandatabase")]
+        [HttpDelete("cleandatabase")]
         public async Task<ActionResult> CleanDatabase()
         {
             await _businessAllCard.DatabaseCleaner();
