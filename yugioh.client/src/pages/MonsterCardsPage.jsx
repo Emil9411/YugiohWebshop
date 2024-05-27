@@ -255,7 +255,7 @@ function MonsterCardsPage() {
                             <h3>Race:</h3>
                         </th>
                         <th>
-                            <h3>Level:</h3>
+                            <h3>Level/Rank:</h3>
                         </th>
                         <th>
                             <h3>Search by Name:</h3>
