@@ -5,6 +5,7 @@ import App from './App.jsx'
 import './index.css'
 import AllCardsPage from './pages/AllCardsPage.jsx'
 import MonsterCardsPage from './pages/MonsterCardsPage.jsx'
+import SpellTrapCardsPage from './pages/SpellTrapCardsPage.jsx'
 
 const router = createBrowserRouter([
     {
@@ -18,7 +19,11 @@ const router = createBrowserRouter([
             {
                 path: "/monsters",
                 element: <MonsterCardsPage />,
-            }
+            },
+            {
+                path: "/spells",
+                element: <SpellTrapCardsPage />,
+            },
         ],
     },
 ]
