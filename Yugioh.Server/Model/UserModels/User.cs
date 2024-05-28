@@ -1,6 +1,6 @@
 ﻿using Microsoft.AspNetCore.Identity;
 
-namespace Yugioh.Server.Model
+namespace Yugioh.Server.Model.UserModels
 {
     public class User : IdentityUser
     {

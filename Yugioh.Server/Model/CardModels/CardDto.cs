@@ -1,4 +1,4 @@
-﻿namespace Yugioh.Server.Model
+﻿namespace Yugioh.Server.Model.CardModels
 {
     public class CardDto
     {
