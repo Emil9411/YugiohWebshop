@@ -1,6 +1,5 @@
 ﻿using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
-using Yugioh.Server.Contracts;
 using Yugioh.Server.Services.AuthServices.Models;
 using Yugioh.Server.Services.AuthServices.Requests;
 using Yugioh.Server.Services.AuthServices.Responses;
@@ -22,7 +21,7 @@ namespace Yugioh.Server.Controllers
         }
 
         [HttpPost("register")]
-        public async Task<ActionResult<RegistrationResponse>> Register(RegistrationRequest request)
+        public async Task<ActionResult<AuthResponse>> Register(RegistrationRequest request)
         {
             if (!ModelState.IsValid)
             {
@@ -40,7 +39,7 @@ namespace Yugioh.Server.Controllers
             }
 
             _logger.LogInformation("AuthController: Register: Registration successful");
-            return CreatedAtAction(nameof(Register), new RegistrationResponse(result.Email, result.Username));
+            return CreatedAtAction(nameof(Register), new AuthResponse(result.Email, result.Username));
         }
 
         [HttpPost("login")]
