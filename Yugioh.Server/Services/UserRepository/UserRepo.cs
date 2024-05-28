@@ -1,4 +1,5 @@
 ﻿using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
 using Yugioh.Server.Context;
 using Yugioh.Server.Model.UserModels;
 using Yugioh.Server.Services.AuthServices.Models;
@@ -17,9 +18,9 @@ namespace Yugioh.Server.Services.UserRepository
             _logger = logger;
         }
 
-        public ActionResult<User> GetUserByEmail(string email)
+        public async Task<ActionResult<User>> GetUserByEmailAsync(string email)
         {
-            var user = _context.Users.FirstOrDefault(u => u.Email == email);
+            var user = await _context.Users.FirstOrDefaultAsync(u => u.Email == email);
             if (user == null)
             {
                 _logger.LogWarning($"UserRepo: GetUserByEmail: User with email {email} not found");
@@ -29,9 +30,9 @@ namespace Yugioh.Server.Services.UserRepository
             return new OkObjectResult(user);
         }
 
-        public ActionResult<User> GetUserById(string id)
+        public async Task<ActionResult<User>> GetUserByIdAsync(string id)
         {
-            var user = _context.Users.FirstOrDefault(u => u.Id == id);
+            var user = await _context.Users.FirstOrDefaultAsync(u => u.Id == id);
             if (user == null)
             {
                 _logger.LogWarning($"UserRepo: GetUserById: User with id {id} not found");
@@ -41,9 +42,9 @@ namespace Yugioh.Server.Services.UserRepository
             return new OkObjectResult(user);
         }
 
-        public ActionResult<IEnumerable<User>> GetUsers()
+        public async Task<ActionResult<IEnumerable<User>>> GetUsersAsync()
         {
-            var users = _context.Users.ToList();
+            var users = await _context.Users.ToListAsync();
             if (users.Count == 0)
             {
                 _logger.LogWarning("UserRepo: GetUsers: No users found");
@@ -53,22 +54,22 @@ namespace Yugioh.Server.Services.UserRepository
             return new OkObjectResult(users);
         }
 
-        public ActionResult<User> AddAdminUser(User user)
+        public async Task<ActionResult<User>> AddAdminUserAsync(User user)
         {
             if (user == null)
             {
                 _logger.LogWarning("UserRepo: AddAdminUser: User is null");
                 return new BadRequestResult();
             }
-            _context.Users.Add(user);
-            _context.SaveChanges();
+            await _context.Users.AddAsync(user);
+            await _context.SaveChangesAsync();
             _logger.LogInformation($"UserRepo: AddAdminUser: Admin with email {user.Email} added");
             return new OkObjectResult(user);
         }
 
-        public ActionResult<AuthResult> UpdateUser(UpdatePersonalDataRequest updatePersonalDataRequest)
+        public async Task<ActionResult<AuthResult>> UpdateUserAsync(UpdatePersonalDataRequest updatePersonalDataRequest)
         {
-            var user = _context.Users.FirstOrDefault(u => u.Email == updatePersonalDataRequest.Email);
+            var user = await _context.Users.FirstOrDefaultAsync(u => u.Email == updatePersonalDataRequest.Email);
             if (user == null)
             {
                 _logger.LogWarning($"UserRepo: UpdateUser: User with email {updatePersonalDataRequest.Email} not found");
@@ -89,21 +90,21 @@ namespace Yugioh.Server.Services.UserRepository
                 }
             }
             _context.Users.Update(user);
-            _context.SaveChanges();
+            await _context.SaveChangesAsync();
             _logger.LogInformation($"UserRepo: UpdateUser: User with email {updatePersonalDataRequest.Email} updated");
             return new OkObjectResult(new AuthResult(true, user?.Email ?? "", user?.UserName ?? "", ""));
         }
 
-        public ActionResult<AuthResult> DeleteUser(AuthRequest authRequest)
+        public async Task<ActionResult<AuthResult>> DeleteUserAsync(AuthRequest authRequest)
         {
-            var user = _context.Users.FirstOrDefault(u => u.Email == authRequest.Email);
+            var user = await _context.Users.FirstOrDefaultAsync(u => u.Email == authRequest.Email);
             if (user == null)
             {
                 _logger.LogWarning($"UserRepo: DeleteUser: User with email {authRequest.Email} not found");
                 return new NotFoundResult();
             }
             _context.Users.Remove(user);
-            _context.SaveChanges();
+            await _context.SaveChangesAsync();
             _logger.LogInformation($"UserRepo: DeleteUser: User with email {authRequest.Email} deleted");
             return new OkObjectResult(new AuthResult(true, user?.Email ?? "", user?.UserName ?? "", ""));
         }
