@@ -1,5 +1,4 @@
-﻿using Microsoft.AspNetCore.Mvc;
-using Microsoft.EntityFrameworkCore;
+﻿using Microsoft.EntityFrameworkCore;
 using Yugioh.Server.Context;
 using Yugioh.Server.Model.UserModels;
 using Yugioh.Server.Services.AuthServices.Models;
@@ -18,62 +17,63 @@ namespace Yugioh.Server.Services.UserRepository
             _logger = logger;
         }
 
-        public async Task<ActionResult<User>> GetUserByEmailAsync(string email)
+        public async Task<User?> GetUserByEmailAsync(string email)
         {
             var user = await _context.Users.FirstOrDefaultAsync(u => u.Email == email);
+            _logger.LogInformation($"UserRepo: GetUserByEmail: User with email {user.Email} found");
             if (user == null)
             {
                 _logger.LogWarning($"UserRepo: GetUserByEmail: User with email {email} not found");
-                return new NotFoundResult();
+                return null;
             }
             _logger.LogInformation($"UserRepo: GetUserByEmail: User with email {email} found");
-            return new OkObjectResult(user);
+            return user;
         }
 
-        public async Task<ActionResult<User>> GetUserByIdAsync(string id)
+        public async Task<User?> GetUserByIdAsync(string id)
         {
             var user = await _context.Users.FirstOrDefaultAsync(u => u.Id == id);
             if (user == null)
             {
                 _logger.LogWarning($"UserRepo: GetUserById: User with id {id} not found");
-                return new NotFoundResult();
+                return null;
             }
             _logger.LogInformation($"UserRepo: GetUserById: User with id {id} found");
-            return new OkObjectResult(user);
+            return user;
         }
 
-        public async Task<ActionResult<IEnumerable<User>>> GetUsersAsync()
+        public async Task<IEnumerable<User>?> GetUsersAsync()
         {
             var users = await _context.Users.ToListAsync();
             if (users.Count == 0)
             {
                 _logger.LogWarning("UserRepo: GetUsers: No users found");
-                return new NotFoundResult();
+                return null;
             }
             _logger.LogInformation("UserRepo: GetUsers: Users found");
-            return new OkObjectResult(users);
+            return users;
         }
 
-        public async Task<ActionResult<User>> AddAdminUserAsync(User user)
+        public async Task<User?> AddAdminUserAsync(User user)
         {
             if (user == null)
             {
                 _logger.LogWarning("UserRepo: AddAdminUser: User is null");
-                return new BadRequestResult();
+                return null;
             }
             await _context.Users.AddAsync(user);
             await _context.SaveChangesAsync();
             _logger.LogInformation($"UserRepo: AddAdminUser: Admin with email {user.Email} added");
-            return new OkObjectResult(user);
+            return user;
         }
 
-        public async Task<ActionResult<AuthResult>> UpdateUserAsync(UpdatePersonalDataRequest updatePersonalDataRequest)
+        public async Task<AuthResult?> UpdateUserAsync(UpdatePersonalDataRequest updatePersonalDataRequest)
         {
             var user = await _context.Users.FirstOrDefaultAsync(u => u.Email == updatePersonalDataRequest.Email);
             if (user == null)
             {
                 _logger.LogWarning($"UserRepo: UpdateUser: User with email {updatePersonalDataRequest.Email} not found");
-                return new NotFoundResult();
+                return null;
             }
             var properties = typeof(UpdatePersonalDataRequest).GetProperties();
             foreach (var property in properties)
@@ -92,21 +92,35 @@ namespace Yugioh.Server.Services.UserRepository
             _context.Users.Update(user);
             await _context.SaveChangesAsync();
             _logger.LogInformation($"UserRepo: UpdateUser: User with email {updatePersonalDataRequest.Email} updated");
-            return new OkObjectResult(new AuthResult(true, user?.Email ?? "", user?.UserName ?? "", ""));
+            return new AuthResult(true, user?.Email ?? "", user?.UserName ?? "", "");
         }
 
-        public async Task<ActionResult<AuthResult>> DeleteUserAsync(AuthRequest authRequest)
+        public async Task<AuthResult?> DeleteUserAsync(AuthRequest authRequest)
         {
             var user = await _context.Users.FirstOrDefaultAsync(u => u.Email == authRequest.Email);
             if (user == null)
             {
                 _logger.LogWarning($"UserRepo: DeleteUser: User with email {authRequest.Email} not found");
-                return new NotFoundResult();
+                return null;
             }
             _context.Users.Remove(user);
             await _context.SaveChangesAsync();
             _logger.LogInformation($"UserRepo: DeleteUser: User with email {authRequest.Email} deleted");
-            return new OkObjectResult(new AuthResult(true, user?.Email ?? "", user?.UserName ?? "", ""));
+            return new AuthResult(true, user?.Email ?? "", user?.UserName ?? "", "");
+        }
+
+        public async Task<AuthResult?> DeleteUserAdminAsync(string email)
+        {
+            var user = await _context.Users.FirstOrDefaultAsync(u => u.Email == email);
+            if (user == null)
+            {
+                _logger.LogWarning($"UserRepo: DeleteUserAdmin: User with email {email} not found");
+                return null;
+            }
+            _context.Users.Remove(user);
+            await _context.SaveChangesAsync();
+            _logger.LogInformation($"UserRepo: DeleteUserAdmin: User with email {email} deleted");
+            return new AuthResult(true, user?.Email ?? "", user?.UserName ?? "", "");
         }
     }
 }

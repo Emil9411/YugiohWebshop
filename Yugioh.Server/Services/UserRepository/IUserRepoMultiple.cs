@@ -1,10 +1,9 @@
-﻿using Microsoft.AspNetCore.Mvc;
-using Yugioh.Server.Model.UserModels;
+﻿using Yugioh.Server.Model.UserModels;
 
 namespace Yugioh.Server.Services.UserRepository
 {
     public interface IUserRepoMultiple
     {
-        Task<ActionResult<IEnumerable<User>>> GetUsersAsync();
+        Task<IEnumerable<User>?> GetUsersAsync();
     }
 }
