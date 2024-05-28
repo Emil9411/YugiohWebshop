@@ -1,5 +1,5 @@
 ﻿using System.Text.Json;
-using Yugioh.Server.Model;
+using Yugioh.Server.Model.CardModels;
 
 namespace Yugioh.Server.Services.JsonProcess
 {

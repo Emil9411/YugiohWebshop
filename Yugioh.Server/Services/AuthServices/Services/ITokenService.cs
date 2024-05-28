@@ -1,4 +1,4 @@
-﻿using Yugioh.Server.Model;
+﻿using Yugioh.Server.Model.UserModels;
 
 namespace Yugioh.Server.Services.AuthServices.Services
 {

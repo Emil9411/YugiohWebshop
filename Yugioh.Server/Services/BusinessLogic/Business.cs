@@ -1,4 +1,4 @@
-﻿using Yugioh.Server.Model;
+﻿using Yugioh.Server.Model.CardModels;
 using Yugioh.Server.Services.Api;
 using Yugioh.Server.Services.CardRepository;
 using Yugioh.Server.Services.JsonProcess;

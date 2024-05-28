@@ -2,7 +2,7 @@
 using Microsoft.IdentityModel.Tokens;
 using System.IdentityModel.Tokens.Jwt;
 using System.Text;
-using Yugioh.Server.Model;
+using Yugioh.Server.Model.UserModels;
 using Yugioh.Server.Services.AuthServices.Models;
 
 namespace Yugioh.Server.Services.AuthServices.Services

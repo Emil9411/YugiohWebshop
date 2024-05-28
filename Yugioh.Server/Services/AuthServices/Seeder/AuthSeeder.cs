@@ -1,5 +1,5 @@
 ﻿using Microsoft.AspNetCore.Identity;
-using Yugioh.Server.Model;
+using Yugioh.Server.Model.UserModels;
 
 namespace Yugioh.Server.Services.AuthServices.Seeder
 {

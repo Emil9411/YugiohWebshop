@@ -7,7 +7,7 @@ using Microsoft.Net.Http.Headers;
 using Microsoft.OpenApi.Models;
 using System.Text;
 using Yugioh.Server.Context;
-using Yugioh.Server.Model;
+using Yugioh.Server.Model.UserModels;
 using Yugioh.Server.Services.Api;
 using Yugioh.Server.Services.AuthServices.Models;
 using Yugioh.Server.Services.AuthServices.Seeder;
