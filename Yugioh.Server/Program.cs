@@ -15,6 +15,7 @@ using Yugioh.Server.Services.AuthServices.Services;
 using Yugioh.Server.Services.BusinessLogic;
 using Yugioh.Server.Services.CardRepository;
 using Yugioh.Server.Services.JsonProcess;
+using Yugioh.Server.Services.UserRepository;
 using Yugioh.Server.Utilities;
 
 var builder = WebApplication.CreateBuilder(args);
@@ -73,6 +74,8 @@ void AddServices()
     builder.Services.AddScoped<IRandomRowSelector, RandomRowSelector>();
     builder.Services.AddScoped<ITokenService, TokenService>();
     builder.Services.AddScoped<IAuthService, AuthService>();
+    builder.Services.AddScoped<IUserRepoSingle, UserRepo>();
+    builder.Services.AddScoped<IUserRepoMultiple, UserRepo>();
     builder.Services.AddScoped<AuthSeeder>();
     builder.Services.AddSingleton<IYugiohApiAllCard, YugiohApi>();
     builder.Services.AddSingleton<IYugiohApiSingleCard, YugiohApi>();
