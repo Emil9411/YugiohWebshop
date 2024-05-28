@@ -74,7 +74,7 @@ namespace Yugioh.Server.Controllers
             return Ok(adminUser);
         }
 
-        [HttpPost("updateuser"), Authorize(Roles = "User, Admin")]
+        [HttpPatch("updateuser"), Authorize(Roles = "User, Admin")]
         public async Task<ActionResult<AuthResult>> UpdateUser(UpdatePersonalDataRequest updatePersonalDataRequest)
         {
             var result = await _userRepoSingle.UpdateUserAsync(updatePersonalDataRequest);
@@ -87,10 +87,23 @@ namespace Yugioh.Server.Controllers
             return Ok(result);
         }
 
-        [HttpPost("deleteuser"), Authorize(Roles = "User, Admin")]
+        [HttpDelete("deleteuser"), Authorize(Roles = "User, Admin")]
         public async Task<ActionResult<AuthResult>> DeleteUser(AuthRequest authRequest)
         {
             var result = await _userRepoSingle.DeleteUserAsync(authRequest);
+            if (result == null)
+            {
+                _logger.LogError("Controller: Error deleting user");
+                return BadRequest("Controller: Error deleting user");
+            }
+            _logger.LogInformation("Controller: User deleted");
+            return Ok(result);
+        }
+
+        [HttpDelete("deleteuseradmin"), Authorize(Roles = "Admin")]
+        public async Task<ActionResult<AuthResult>> DeleteUserAdmin(string email)
+        {
+            var result = await _userRepoSingle.DeleteUserAdminAsync(email);
             if (result == null)
             {
                 _logger.LogError("Controller: Error deleting user");
