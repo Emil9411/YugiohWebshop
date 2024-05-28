@@ -7,10 +7,10 @@ namespace Yugioh.Server.Services.UserRepository
 {
     public interface IUserRepoSingle
     {
-        ActionResult<User> GetUserByEmail(string email);
-        ActionResult<User> GetUserById(string id);
-        ActionResult<User> AddAdminUser(User user);
-        ActionResult<AuthResult> UpdateUser(UpdatePersonalDataRequest updatePersonalDataRequest);
-        ActionResult<AuthResult> DeleteUser(AuthRequest authRequest);
+        Task<ActionResult<User>> GetUserByEmailAsync(string email);
+        Task<ActionResult<User>> GetUserByIdAsync(string id);
+        Task<ActionResult<User>> AddAdminUserAsync(User user);
+        Task<ActionResult<AuthResult>> UpdateUserAsync(UpdatePersonalDataRequest updatePersonalDataRequest);
+        Task<ActionResult<AuthResult>> DeleteUserAsync(AuthRequest authRequest);
     }
 }
