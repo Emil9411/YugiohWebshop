@@ -73,6 +73,58 @@ namespace Yugioh.Server.Services.AuthServices.Services
             return new AuthResult(true, email, user?.UserName ?? "", accessToken);
         }
 
+        public async Task<AuthResult> ChangePasswordAsync(string email, string currentPassword, string newPassword)
+        {
+            var user = await _userManager.FindByEmailAsync(email);
+            if (user == null)
+            {
+                _logger.LogError($"AuthService: User with email {email} not found");
+                return InvalidEmail(email);
+            }
+
+            var validPassword = await _userManager.CheckPasswordAsync(user, currentPassword);
+            if (!validPassword)
+            {
+                _logger.LogError($"AuthService: Invalid password for user with email {email}");
+                return InvalidPassword(email, user?.UserName ?? "");
+            }
+
+            var result = await _userManager.ChangePasswordAsync(user, currentPassword, newPassword);
+            if (result.Succeeded)
+            {
+                _logger.LogInformation($"AuthService: Password for user with email {email} changed successfully");
+                return new AuthResult(true, email, user?.UserName ?? "", "");
+            }
+            else
+            {
+                _logger.LogError($"AuthService: Error changing password for user with email {email}");
+                return FailedRegistration(result, email, user?.UserName ?? "");
+            }
+        }
+
+        public async Task<AuthResult> ChangeEmailAsync(string email, string newEmail)
+        {
+            var user = await _userManager.FindByEmailAsync(email);
+            if (user == null)
+            {
+                _logger.LogError($"AuthService: User with email {email} not found");
+                return InvalidEmail(email);
+            }
+
+            user.Email = newEmail;
+            var result = await _userManager.UpdateAsync(user);
+            if (result.Succeeded)
+            {
+                _logger.LogInformation($"AuthService: Email for user with email {email} changed successfully");
+                return new AuthResult(true, newEmail, user?.UserName ?? "", "");
+            }
+            else
+            {
+                _logger.LogError($"AuthService: Error changing email for user with email {email}");
+                return FailedRegistration(result, email, user?.UserName ?? "");
+            }
+        }
+
         public JwtSecurityToken Verify(string token)
         {
             var tokenHandler = new JwtSecurityTokenHandler();
