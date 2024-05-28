@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Mvc;
 using Yugioh.Server.Services.BusinessLogic;
 using Yugioh.Server.Utilities;
 
@@ -21,7 +22,7 @@ namespace Yugioh.Server.Controllers
             _randomRowSelector = randomRowSelector;
         }
 
-        [HttpGet("filldatabase")]
+        [HttpGet("filldatabase"), Authorize(Roles = "Admin")]
         public async Task<ActionResult> FillDatabase()
         {
             await _businessAllCard.DatabaseFiller();
@@ -29,7 +30,7 @@ namespace Yugioh.Server.Controllers
             return Ok("Controller(Fill): All cards processed and saved to the database");
         }
 
-        [HttpPatch("updatedatabase")]
+        [HttpPatch("updatedatabase"), Authorize(Roles = "Admin")]
         public async Task<ActionResult> UpdateDatabase()
         {
             await _businessAllCard.DatabaseUpdater();
@@ -37,7 +38,7 @@ namespace Yugioh.Server.Controllers
             return Ok("Controller(Update): All cards processed and saved to the database");
         }
 
-        [HttpDelete("cleandatabase")]
+        [HttpDelete("cleandatabase"), Authorize(Roles = "Admin")]
         public async Task<ActionResult> CleanDatabase()
         {
             await _businessAllCard.DatabaseCleaner();
@@ -58,7 +59,7 @@ namespace Yugioh.Server.Controllers
             return Ok(allCard);
         }
 
-        [HttpGet("allmonstercards")]
+        [HttpGet("allmonstercards"), Authorize(Roles = "User,Admin")]
         public async Task<ActionResult> GetAllMonsterCards()
         {
             var allMonsterCards = await _businessAllCard.GetAllMonsterCards();
@@ -71,7 +72,7 @@ namespace Yugioh.Server.Controllers
             return Ok(allMonsterCards);
         }
 
-        [HttpGet("allspellcards")]
+        [HttpGet("allspellcards"), Authorize(Roles = "User,Admin")]
         public async Task<ActionResult> GetAllSpellCards()
         {
             var allSpellCards = await _businessAllCard.GetAllSpellCards();
@@ -84,7 +85,7 @@ namespace Yugioh.Server.Controllers
             return Ok(allSpellCards);
         }
 
-        [HttpGet("cardbyname")]
+        [HttpGet("cardbyname"), Authorize(Roles = "User,Admin")]
         public async Task<ActionResult> GetCardByName([FromQuery] string name)
         {
             var card = await _businessSingleCard.GetCardByNameAsync(name);
@@ -97,7 +98,7 @@ namespace Yugioh.Server.Controllers
             return Ok(card);
         }
 
-        [HttpGet("cardbyid")]
+        [HttpGet("cardbyid"), Authorize(Roles = "User,Admin")]
         public async Task<ActionResult> GetCardById([FromQuery] int cardId)
         {
             var card = await _businessSingleCard.GetCardByCardIdAsync(cardId);
