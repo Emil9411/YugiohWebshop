@@ -5,7 +5,7 @@ namespace Yugioh.Server.Services.AuthServices.Services
 {
     public interface IAuthService
     {
-        Task<AuthResult> RegisterAsync(string emial, string username, string password, string role);
+        Task<AuthResult> RegisterAsync(string email, string username, string password, string role);
         Task<AuthResult> LoginAsync(string email, string password);
         Task<AuthResult> ChangePasswordAsync(string email, string currentPassword, string newPassword);
         Task<AuthResult> ChangeEmailAsync(string email, string newEmail);
