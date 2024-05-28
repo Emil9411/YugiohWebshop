@@ -69,6 +69,66 @@ namespace Yugioh.Server.Controllers
             return Ok(new AuthResponse(result.Email, result.Username));
         }
 
+        [HttpPost("changepassword"), Authorize(Roles = "User, Admin")]
+        public async Task<ActionResult> ChangePassword(ChangePasswordRequest request)
+        {
+            if (!ModelState.IsValid)
+            {
+                _logger.LogError("AuthController: ChangePassword: Model state is invalid");
+                return BadRequest(ModelState);
+            }
+
+            var cookie = Request.Cookies["Authorization"];
+
+            if (cookie == null)
+            {
+                _logger.LogError("AuthController: ChangePassword: No cookie found");
+                return BadRequest("AuthController: ChangePassword: No cookie found");
+            }
+
+            var result = await _authService.ChangePasswordAsync(request.Email, request.OldPassword, request.NewPassword);
+
+            if (!result.Success)
+            {
+                AddErrors(result);
+                _logger.LogError("AuthController: ChangePassword: Change password failed");
+                return BadRequest(ModelState);
+            }
+
+            _logger.LogInformation("AuthController: ChangePassword: Change password successful");
+            return Ok();
+        }
+
+        [HttpPost("changeemail"), Authorize(Roles = "User, Admin")]
+        public async Task<ActionResult> ChangeEmail(UpdateEmailRequest request)
+        {
+            if (!ModelState.IsValid)
+            {
+                _logger.LogError("AuthController: ChangeEmail: Model state is invalid");
+                return BadRequest(ModelState);
+            }
+
+            var cookie = Request.Cookies["Authorization"];
+
+            if (cookie == null)
+            {
+                _logger.LogError("AuthController: ChangeEmail: No cookie found");
+                return BadRequest("AuthController: ChangeEmail: No cookie found");
+            }
+
+            var result = await _authService.ChangeEmailAsync(request.Email, request.NewEmail);
+
+            if (!result.Success)
+            {
+                AddErrors(result);
+                _logger.LogError("AuthController: ChangeEmail: Change email failed");
+                return BadRequest(ModelState);
+            }
+
+            _logger.LogInformation("AuthController: ChangeEmail: Change email successful");
+            return Ok();
+        }
+
         [HttpGet("whoami"), Authorize(Roles = "User, Admin")]
         public ActionResult<AuthResponse> WhoAmI()
         {
