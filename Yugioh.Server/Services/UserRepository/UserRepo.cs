@@ -1,6 +1,8 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using Yugioh.Server.Context;
 using Yugioh.Server.Model.UserModels;
+using Yugioh.Server.Services.AuthServices.Models;
+using Yugioh.Server.Services.AuthServices.Requests;
 
 namespace Yugioh.Server.Services.UserRepository
 {
@@ -64,48 +66,32 @@ namespace Yugioh.Server.Services.UserRepository
             return new OkObjectResult(user);
         }
 
-        public ActionResult<User> UpdateUser(User user)
+        public ActionResult<AuthResult> UpdateUser(UpdatePersonalDataRequest updatePersonalDataRequest)
         {
+            var user = _context.Users.FirstOrDefault(u => u.Email == updatePersonalDataRequest.Email);
             if (user == null)
             {
-                _logger.LogWarning("UserRepo: UpdateUser: User is null");
-                return new BadRequestResult();
-            }
-            var userToUpdate = _context.Users.FirstOrDefault(u => u.Id == user.Id);
-            if (userToUpdate == null)
-            {
-                _logger.LogWarning($"UserRepo: UpdateUser: User with id {user.Id} not found");
+                _logger.LogWarning($"UserRepo: UpdateUser: User with email {updatePersonalDataRequest.Email} not found");
                 return new NotFoundResult();
             }
-            userToUpdate.FirstName = user.FirstName;
-            userToUpdate.LastName = user.LastName;
-            userToUpdate.Country = user.Country;
-            userToUpdate.City = user.City;
-            userToUpdate.Address = user.Address;
-            userToUpdate.PostalCode = user.PostalCode;
-            userToUpdate.PhoneNumber = user.PhoneNumber;
-            _context.SaveChanges();
-            _logger.LogInformation($"UserRepo: UpdateUser: User with id {user.Id} updated");
-            return new OkObjectResult(userToUpdate);
-        }
-
-        public ActionResult<User> DeleteUser(User user)
-        {
-            if (user == null)
+            var properties = typeof(UpdatePersonalDataRequest).GetProperties();
+            foreach (var property in properties)
             {
-                _logger.LogWarning("UserRepo: DeleteUser: User is null");
-                return new BadRequestResult();
+                var newValue = property.GetValue(updatePersonalDataRequest);
+                var userProperty = typeof(User).GetProperty(property.Name);
+                if (userProperty != null)
+                {
+                    var currentValue = userProperty.GetValue(user);
+                    if (!Equals(currentValue, newValue))
+                    {
+                        userProperty.SetValue(user, newValue);
+                    }
+                }
             }
-            var userToDelete = _context.Users.FirstOrDefault(u => u.Id == user.Id);
-            if (userToDelete == null)
-            {
-                _logger.LogWarning($"UserRepo: DeleteUser: User with id {user.Id} not found");
-                return new NotFoundResult();
-            }
-            _context.Users.Remove(userToDelete);
+            _context.Users.Update(user);
             _context.SaveChanges();
-            _logger.LogInformation($"UserRepo: DeleteUser: User with id {user.Id} deleted");
-            return new OkObjectResult(userToDelete);
+            _logger.LogInformation($"UserRepo: UpdateUser: User with email {updatePersonalDataRequest.Email} updated");
+            return new OkObjectResult(new AuthResult(true, user?.Email ?? "", user?.UserName ?? "", ""));
         }
     }
 }
