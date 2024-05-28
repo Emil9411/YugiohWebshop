@@ -93,5 +93,19 @@ namespace Yugioh.Server.Services.UserRepository
             _logger.LogInformation($"UserRepo: UpdateUser: User with email {updatePersonalDataRequest.Email} updated");
             return new OkObjectResult(new AuthResult(true, user?.Email ?? "", user?.UserName ?? "", ""));
         }
+
+        public ActionResult<AuthResult> DeleteUser(AuthRequest authRequest)
+        {
+            var user = _context.Users.FirstOrDefault(u => u.Email == authRequest.Email);
+            if (user == null)
+            {
+                _logger.LogWarning($"UserRepo: DeleteUser: User with email {authRequest.Email} not found");
+                return new NotFoundResult();
+            }
+            _context.Users.Remove(user);
+            _context.SaveChanges();
+            _logger.LogInformation($"UserRepo: DeleteUser: User with email {authRequest.Email} deleted");
+            return new OkObjectResult(new AuthResult(true, user?.Email ?? "", user?.UserName ?? "", ""));
+        }
     }
 }
