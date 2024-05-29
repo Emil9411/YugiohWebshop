@@ -7,6 +7,7 @@ import AllCardsPage from './pages/AllCardsPage.jsx'
 import MonsterCardsPage from './pages/MonsterCardsPage.jsx'
 import SpellTrapCardsPage from './pages/SpellTrapCardsPage.jsx'
 import RegistrationPage from './pages/RegistrationPage.jsx'
+import LoginPage from './pages/LoginPage.jsx'
 
 const router = createBrowserRouter([
     {
@@ -29,6 +30,10 @@ const router = createBrowserRouter([
                 path: "/registration",
                 element: <RegistrationPage />,
             },
+            {
+                path: "/login",
+                element: <LoginPage />,
+            }
         ],
     },
 ]
