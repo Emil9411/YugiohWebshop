@@ -37,6 +37,8 @@ namespace Yugioh.Server.Test
             PhoneNumber = "123456789"
         };
 
+        readonly RegistrationRequest registrationRequest = new RegistrationRequest("admin2@admin.com", "admin2", "admin2");
+
         // GetUserByEmail Tests
 
         [Test]
@@ -127,26 +129,26 @@ namespace Yugioh.Server.Test
         public async Task AddAdminUser_ReturnsUser_WhenUserIsNotNull()
         {
             // Arrange
-            _userRepoSingleMock.Setup(x => x.AddAdminUserAsync(It.IsAny<User>())).ReturnsAsync(user);
+            _userRepoSingleMock.Setup(x => x.AddAdminUserAsync(It.IsAny<RegistrationRequest>())).ReturnsAsync(new AuthResult(true, user.Email, user.Email, "asd"));
 
             // Act
-            var result = await _userController.AddAdminUser(user);
+            var result = await _userController.AddAdminUser(registrationRequest);
 
             // Assert
-            Assert.That(result.Result, Is.InstanceOf<OkObjectResult>());
+            Assert.That(result, Is.InstanceOf<OkObjectResult>());
         }
 
         [Test]
         public async Task AddAdminUser_ReturnsBadRequest_WhenUserIsNull()
         {
             // Arrange
-            _userRepoSingleMock.Setup(x => x.AddAdminUserAsync(It.IsAny<User>())).ReturnsAsync((User)null);
+            _userRepoSingleMock.Setup(x => x.AddAdminUserAsync(It.IsAny<RegistrationRequest>())).ReturnsAsync((AuthResult)null);
 
             // Act
-            var result = await _userController.AddAdminUser(null);
+            var result = await _userController.AddAdminUser(registrationRequest);
 
             // Assert
-            Assert.That(result.Result, Is.InstanceOf<BadRequestObjectResult>());
+            Assert.That(result, Is.InstanceOf<BadRequestObjectResult>());
         }
 
         // UpdateUser Tests
