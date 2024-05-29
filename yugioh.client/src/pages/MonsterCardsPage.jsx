@@ -53,7 +53,7 @@ function MonsterCardsPage() {
             const attributes = [];
             const races = [];
             const levels = [];
-            const response = await fetch('https://localhost:7114/api/Card/allmonstercards');
+            const response = await fetch('/api/Card/allmonstercards');
             const array = await response.json();
             array.sort((a, b) => a.name.localeCompare(b.name));
             setCards(array);

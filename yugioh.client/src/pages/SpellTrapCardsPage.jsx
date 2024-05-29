@@ -42,7 +42,7 @@ function SpellTrapCardsPage() {
             const archetypes = [];
             const attributes = [];
             const races = [];
-            const response = await fetch('https://localhost:7114/api/Card/allspellcards');
+            const response = await fetch('/api/Card/allspellcards');
             const array = await response.json();
             array.sort((a, b) => a.name.localeCompare(b.name));
             setCards(array);

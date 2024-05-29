@@ -13,7 +13,7 @@ function CardComponent({ cardData }) {
         setCard(cardData);
     }, [cardData]);
 
-    let cardImageUrl = "https://localhost:7114/YugiohPics/";
+    let cardImageUrl = "/YugiohPics/";
     if (card.frameType === "spell" || card.frameType === "trap" || card.frameType === "skill") {
         cardImageUrl += "SpellAndTrapCards/";
     } else {

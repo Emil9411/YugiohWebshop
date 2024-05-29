@@ -42,7 +42,7 @@ function AllCardsPage() {
             const archetypes = [];
             const attributes = [];
             const races = [];
-            const response = await fetch('https://localhost:7114/api/Card/allcards');
+            const response = await fetch('/api/Card/allcards');
             const data = await response.json();
             const array = data.monsterCards.concat(data.spellAndTrapCards);
             array.sort((a, b) => a.name.localeCompare(b.name));
