@@ -71,7 +71,9 @@ function App() {
                             <Link to="/registration">
                                 <button disabled={location.pathname === '/registration'}>Register</button>
                             </Link>
-                            <button>Login</button>
+                            <Link to="/login">
+                                <button disabled={location.pathname === '/login'}>Login</button>
+                            </Link>
                         </>
                     ) : !user.username.includes("admin") ? (
                         <>
