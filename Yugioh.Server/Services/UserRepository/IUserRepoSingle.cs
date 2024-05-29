@@ -8,7 +8,7 @@ namespace Yugioh.Server.Services.UserRepository
     {
         Task<User?> GetUserByEmailAsync(string email);
         Task<User?> GetUserByIdAsync(string id);
-        Task<User?> AddAdminUserAsync(User user);
+        Task<AuthResult?> AddAdminUserAsync(RegistrationRequest registrationRequest);
         Task<AuthResult?> UpdateUserAsync(UpdatePersonalDataRequest updatePersonalDataRequest);
         Task<AuthResult?> DeleteUserAsync(AuthRequest authRequest);
         Task<AuthResult?> DeleteUserAdminAsync(string email);
