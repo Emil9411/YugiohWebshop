@@ -107,7 +107,7 @@ function RegistrationPage() {
                             </td>
                         </tr>
                         <tr rowSpan="2">
-                        <td colSpan="2"></td>
+                            <td colSpan="2"></td>
                         </tr>
                     </tbody>
                 </table>

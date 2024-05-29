@@ -84,8 +84,8 @@ function App() {
                                 <button disabled={location.pathname === '/spells'}>Spell/Trap cards</button>
                             </Link>
                             <button>Profile</button>
-                            <button>Logout</button>
                             <button>Cart</button>
+                            <button>Logout</button>
                         </>
                     ) : (
                         <>
