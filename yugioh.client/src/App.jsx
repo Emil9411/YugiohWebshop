@@ -2,6 +2,7 @@ import { useEffect, useState } from 'react';
 import { Outlet, Link, useLocation } from "react-router-dom";
 import './index.css';
 function App() {
+    const [user, setUser] = useState(null);
     const location = useLocation();
 
     const updateBackgroundClass = () => {
@@ -16,6 +17,32 @@ function App() {
             root.classList.remove('wide-bg');
         }
     };
+
+    useEffect(() => {
+        async function fetchUser() {
+            try {
+                const response = await fetch("api/Auth/whoami", {
+                    method: "GET",
+                    credentials: "include",
+                    headers: {
+                        "Content-Type": "application/json",
+                    },
+                });
+                if (response.ok) {
+                    const data = await response.json();
+                    setUser(data);
+                } else {
+                    throw new Error("User not authenticated");
+                }
+            } catch (error) {
+                console.error(error);
+            }
+        }
+        fetchUser();
+    }, [location.pathname]);
+
+
+
 
     useEffect(() => {
         updateBackgroundClass(); // Set initial background class
@@ -39,16 +66,37 @@ function App() {
                     <Link to="/all">
                         <button disabled={location.pathname === '/all'}>All cards</button>
                     </Link>
-                    <Link to="/monsters">
-                        <button disabled={location.pathname === '/monsters'}>Monster cards</button>
-                    </Link>
-                    <Link to="/spells">
-                        <button disabled={location.pathname === '/spells'}>Spell/Trap cards</button>
-                    </Link>
-                    <button>Register</button>
-                    <button>Login</button>
-                    <button>Logout</button>
-                    <button>Cart</button>
+                    {user === null ? (
+                        <>
+                            <Link to="/registration">
+                                <button disabled={location.pathname === '/registration'}>Register</button>
+                            </Link>
+                            <button>Login</button>
+                        </>
+                    ) : !user.username.includes("admin") ? (
+                        <>
+                            <Link to="/monsters">
+                                <button disabled={location.pathname === '/monsters'}>Monster cards</button>
+                            </Link>
+                            <Link to="/spells">
+                                <button disabled={location.pathname === '/spells'}>Spell/Trap cards</button>
+                            </Link>
+                            <button>Profile</button>
+                            <button>Logout</button>
+                            <button>Cart</button>
+                        </>
+                    ) : (
+                        <>
+                            <Link to="/monsters">
+                                <button disabled={location.pathname === '/monsters'}>Monster cards</button>
+                            </Link>
+                            <Link to="/spells">
+                                <button disabled={location.pathname === '/spells'}>Spell/Trap cards</button>
+                            </Link>
+                            <button>Admin</button>
+                            <button>Logout</button>
+                        </>
+                    )}
                 </div>
             </div>
             <Outlet />
