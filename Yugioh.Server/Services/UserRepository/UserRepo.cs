@@ -1,4 +1,5 @@
-﻿using Microsoft.EntityFrameworkCore;
+﻿using Microsoft.AspNetCore.Identity;
+using Microsoft.EntityFrameworkCore;
 using Yugioh.Server.Context;
 using Yugioh.Server.Model.UserModels;
 using Yugioh.Server.Services.AuthServices.Models;
@@ -10,11 +11,13 @@ namespace Yugioh.Server.Services.UserRepository
     {
         private readonly UsersContext _context;
         private readonly ILogger<UserRepo> _logger;
+        private readonly UserManager<User> _userManager;
 
-        public UserRepo(UsersContext context, ILogger<UserRepo> logger)
+        public UserRepo(UsersContext context, ILogger<UserRepo> logger, UserManager<User> userManager)
         {
             _context = context;
             _logger = logger;
+            _userManager = userManager;
         }
 
         public async Task<User?> GetUserByEmailAsync(string email)
@@ -54,17 +57,23 @@ namespace Yugioh.Server.Services.UserRepository
             return users;
         }
 
-        public async Task<User?> AddAdminUserAsync(User user)
+        public async Task<AuthResult?> AddAdminUserAsync(RegistrationRequest registrationRequest)
         {
-            if (user == null)
+            var user = new User
             {
-                _logger.LogWarning("UserRepo: AddAdminUser: User is null");
-                return null;
+                UserName = registrationRequest.Username,
+                Email = registrationRequest.Email,
+            };
+            var result = await _userManager.CreateAsync(user, registrationRequest.Password);
+
+            if (result.Succeeded)
+            {
+                await _userManager.AddToRoleAsync(user, "Admin");
+                _logger.LogInformation($"UserRepo: AddAdminUser: Admin user with email {registrationRequest.Email} added");
+                return new AuthResult(true, user.Email, user.UserName, "");
             }
-            await _context.Users.AddAsync(user);
-            await _context.SaveChangesAsync();
-            _logger.LogInformation($"UserRepo: AddAdminUser: Admin with email {user.Email} added");
-            return user;
+            _logger.LogWarning($"UserRepo: AddAdminUser: Admin user with email {registrationRequest.Email} not added");
+            return new AuthResult(false, "", "", "User not added");
         }
 
         public async Task<AuthResult?> UpdateUserAsync(UpdatePersonalDataRequest updatePersonalDataRequest)
