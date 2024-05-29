@@ -62,16 +62,16 @@ namespace Yugioh.Server.Controllers
         }
 
         [HttpPost("addadminuser"), Authorize(Roles = "Admin")]
-        public async Task<ActionResult<User>> AddAdminUser(User user)
+        public async Task<ActionResult> AddAdminUser(RegistrationRequest registrationRequest)
         {
-            var adminUser = await _userRepoSingle.AddAdminUserAsync(user);
-            if (adminUser == null)
+            var result = await _userRepoSingle.AddAdminUserAsync(registrationRequest);
+            if (result == null)
             {
-                _logger.LogError("Controller: Error adding admin user");
-                return BadRequest("Controller: Error adding admin user");
+                _logger.LogError($"Controller: Error adding admin user {registrationRequest.Email}");
+                return BadRequest($"Controller: Error adding admin user {registrationRequest.Email}");
             }
-            _logger.LogInformation("Controller: Admin user added");
-            return Ok(adminUser);
+            _logger.LogInformation($"Controller: Admin user added {registrationRequest.Email}");
+            return Ok(result);
         }
 
         [HttpPatch("updateuser"), Authorize(Roles = "User, Admin")]
