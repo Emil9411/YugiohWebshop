@@ -19,6 +19,9 @@ function RegistrationPage() {
         if (!username || !email || !password) {
             return;
         }
+        if (username.toLowerCase().includes("admin")) {
+            return;
+        }
         try {
             const response = await fetch("api/Auth/register", {
                 method: "POST",
@@ -49,7 +52,7 @@ function RegistrationPage() {
                     <tbody>
                         <tr>
                             <td>
-                                {formSubmitted && username === "" ? <p style={{ color: "red" }}>Username is required</p> : <p>Username:</p>}
+                                {formSubmitted && username === "" ? <p style={{ color: "red" }}>Username is required</p> : formSubmitted && username.toLowerCase().includes("admin") ? <p style={{ color: "red" }}> Username cannot contain &quot;admin&quot;</p> : <p>Username:</p>}
                             </td>
                             <td>
                                 <input
