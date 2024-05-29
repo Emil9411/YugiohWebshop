@@ -29,6 +29,17 @@ namespace Yugioh.Server.Controllers
                 return BadRequest(ModelState);
             }
 
+            if (request.Username.ToLower().Contains("admin"))
+            {
+                ModelState.AddModelError("Username", "Username cannot contain 'admin'");
+                _logger.LogError("AuthController: Register: Username cannot contain 'admin'");
+                return BadRequest(ModelState);
+            }
+            else
+            {
+                _logger.LogInformation("AuthController: Register: Username does not contain 'admin'");
+            }
+
             var result = await _authService.RegisterAsync(request.Email, request.Username, request.Password, "User");
 
             if (!result.Success)
