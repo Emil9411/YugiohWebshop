@@ -1,6 +1,8 @@
 import { useEffect, useState } from 'react';
 import { Outlet, Link, useLocation } from "react-router-dom";
 import './index.css';
+import LogoutButton from './components/functionals/LogoutButton.jsx';
+
 function App() {
     const [user, setUser] = useState(null);
     const location = useLocation();
@@ -85,7 +87,7 @@ function App() {
                             </Link>
                             <button>Profile</button>
                             <button>Cart</button>
-                            <button>Logout</button>
+                            <LogoutButton />
                         </>
                     ) : (
                         <>
@@ -96,7 +98,7 @@ function App() {
                                 <button disabled={location.pathname === '/spells'}>Spell/Trap cards</button>
                             </Link>
                             <button>Admin</button>
-                            <button>Logout</button>
+                            <LogoutButton />
                         </>
                     )}
                 </div>
