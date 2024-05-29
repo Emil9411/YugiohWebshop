@@ -19,6 +19,7 @@ function LogoutButton() {
             } else {
                 if (location.pathname !== "/") {
                     navigate("/");
+                    window.location.reload();
                 } else {
                     window.location.reload();
                 }
