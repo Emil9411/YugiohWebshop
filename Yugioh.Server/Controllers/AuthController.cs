@@ -137,7 +137,7 @@ namespace Yugioh.Server.Controllers
             if (cookie == null)
             {
                 _logger.LogError("AuthController: WhoAmI: No cookie found");
-                return BadRequest("AuthController: WhoAmI: No cookie found");
+                return Unauthorized("AuthController: WhoAmI: No cookie found");
             }
 
             var result = _authService.Verify(cookie);
@@ -153,7 +153,7 @@ namespace Yugioh.Server.Controllers
             }
 
             _logger.LogError("AuthController: WhoAmI: User not found");
-            return BadRequest("AuthController: WhoAmI: User not found");
+            return Unauthorized("AuthController: WhoAmI: User not found");
 
         }
 
