@@ -1,8 +1,8 @@
 import { useState, useEffect } from 'react';
 import CardComponent from '../components/CardComponent';
-import Pagination from '../components/Pagination';
-import SelectFilter from '../components/SelectFilter';
-import SearchBar from '../components/SearchBar';
+import Pagination from '../components/functionals/Pagination';
+import SelectFilter from '../components/functionals/SelectFilter';
+import SearchBar from '../components/functionals/SearchBar';
 import '../index.css';
 import '../components/Component.css';
 

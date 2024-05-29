@@ -1,8 +1,7 @@
 import { useState, useEffect } from 'react';
-import Directions from './Directions';
-import LevelRank from './LevelRank';
-import Attributes from './Attributes';
-
+import Directions from './icons/Directions';
+import LevelRank from './icons/LevelRank';
+import Attributes from './icons/Attributes';
 import './Component.css';
 
 function CardComponent({ cardData }) {
