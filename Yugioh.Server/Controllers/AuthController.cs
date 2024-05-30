@@ -46,7 +46,7 @@ namespace Yugioh.Server.Controllers
             {
                 AddErrors(result);
                 _logger.LogError("AuthController: Register: Registration failed");
-                return BadRequest(ModelState);
+                return BadRequest(result);
             }
 
             _logger.LogInformation("AuthController: Register: Registration successful");
