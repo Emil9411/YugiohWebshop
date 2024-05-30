@@ -30,6 +30,12 @@ namespace Yugioh.Server.Services.AuthServices.Services
                 _logger.LogError($"AuthService: User with email {email} already exists");
                 return new AuthResult(false, email, "", "User with this email already exists");
             }
+            existingUser = await _userManager.FindByNameAsync(username);
+            if (existingUser != null)
+            {
+                _logger.LogError($"AuthService: User with username {username} already exists");
+                return new AuthResult(false, "", username, "User with this username already exists");
+            }
 
             var newUser = new User
             {
