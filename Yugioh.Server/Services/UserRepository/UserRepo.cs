@@ -64,6 +64,10 @@ namespace Yugioh.Server.Services.UserRepository
                 UserName = registrationRequest.Username,
                 Email = registrationRequest.Email,
             };
+            if (!user.UserName.ToLower().Contains("admin"))
+            {
+                user.UserName = "admin" + user.UserName;
+            }
             var result = await _userManager.CreateAsync(user, registrationRequest.Password);
 
             if (result.Succeeded)
