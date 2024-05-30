@@ -1,4 +1,5 @@
 import { useNavigate, useLocation } from 'react-router-dom';
+import swal from 'sweetalert';
 
 function LogoutButton() {
     const navigate = useNavigate();
@@ -18,10 +19,24 @@ function LogoutButton() {
                 throw new Error("Logout failed");
             } else {
                 if (location.pathname !== "/") {
-                    navigate("/");
-                    window.location.reload();
+                    swal({
+                        title: "Logout Successful",
+                        text: "You have successfully logged out",
+                        icon: "success",
+                        button: "OK"
+                    }).then(() => {
+                        navigate("/");
+                        window.location.reload();
+                    })
                 } else {
-                    window.location.reload();
+                    swal({
+                        title: "Logout Successful",
+                        text: "You have successfully logged out",
+                        icon: "success",
+                        button: "OK"
+                    }).then(() => {
+                        window.location.reload();
+                    })
                 }
             }
         } catch (error) {

@@ -1,6 +1,7 @@
 import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import "../index.css";
+import swal from 'sweetalert';
 
 function RegistrationPage() {
     const [username, setUsername] = useState("");
@@ -14,12 +15,30 @@ function RegistrationPage() {
         event.preventDefault();
         setFormSubmitted(true);
         if (password !== passwordConfirmation) {
+            swal({
+                title: "Registration Failed",
+                text: "Passwords do not match",
+                icon: "error",
+                button: "OK"
+            });
             return;
         }
         if (!username || !email || !password) {
+            swal({
+                title: "Registration Failed",
+                text: "Please fill out all fields",
+                icon: "error",
+                button: "OK"
+            });
             return;
         }
         if (username.toLowerCase().includes("admin")) {
+            swal({
+                title: "Registration Failed",
+                text: "Username cannot contain 'admin'",
+                icon: "error",
+                button: "OK"
+            });
             return;
         }
         try {
@@ -34,10 +53,24 @@ function RegistrationPage() {
                     password
                 }),
             });
+            const data = await response.json();
 
             if (response.ok) {
-                navigate("/login");
+                swal({
+                    title: "Registration Successful",
+                    text: "You have successfully registered",
+                    icon: "success",
+                    button: "OK"
+                }).then(() => {
+                    navigate("/login");
+                })
             } else {
+                swal({
+                    title: "Registration Failed",
+                    text: data.token,
+                    icon: "error",
+                    button: "OK"
+                });
                 throw new Error("Registration failed");
             }
         } catch (error) {

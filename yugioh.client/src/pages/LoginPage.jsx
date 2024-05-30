@@ -1,6 +1,7 @@
 import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import "../index.css";
+import swal from 'sweetalert';
 
 function LoginPage() {
     const [email, setEmail] = useState("");
@@ -27,8 +28,21 @@ function LoginPage() {
             });
 
             if (response.ok) {
-                navigate("/");
+                swal({
+                    title: "Login Successful",
+                    text: "You have successfully logged in",
+                    icon: "success",
+                    button: "OK"
+                }).then(() => {
+                    navigate("/");
+                })
             } else {
+                swal({
+                    title: "Login Failed",
+                    text: "Please check your email and password",
+                    icon: "error",
+                    button: "OK"
+                });
                 throw new Error("Login failed");
             }
         } catch (error) {
