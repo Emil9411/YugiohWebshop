@@ -2,11 +2,13 @@ import { useState, useEffect } from 'react';
 import Directions from './icons/Directions';
 import LevelRank from './icons/LevelRank';
 import Attributes from './icons/Attributes';
+import ImageModal from './functionals/ImageModal';
 import './Component.css';
 
 function CardComponent({ cardData }) {
     const [card, setCard] = useState(cardData);
     const [cardBodyHidden, setCardBodyHidden] = useState(true);
+    const [showModal, setShowModal] = useState(false);
 
     useEffect(() => {
         setCard(cardData);
@@ -20,6 +22,10 @@ function CardComponent({ cardData }) {
     }
     cardImageUrl += card.cardId + ".jpg";
 
+    function handleModal() {
+        setShowModal(true);
+    }
+
     return (
         <div className="card">
             <div className="card-name">
@@ -27,7 +33,7 @@ function CardComponent({ cardData }) {
             </div>
             <div className="card-basics">
                 <p>{card.type}</p>
-                <img src={cardImageUrl} alt={card.name} />
+                <img src={cardImageUrl} alt={card.name} onClick={handleModal} />
                 <br />
                 <button onClick={() => setCardBodyHidden(!cardBodyHidden)}>
                     {cardBodyHidden ? 'Show details' : 'Hide details'}
@@ -47,6 +53,7 @@ function CardComponent({ cardData }) {
                 <a href={card.ygoProDeckUrl}>YGOPRODeck link</a>
                 <p>Price: {card.price} $</p>
             </div>
+            {showModal ? <ImageModal imageUrl={cardImageUrl} onClose={() => setShowModal(false)} /> : null}
         </div>
     );
 }
