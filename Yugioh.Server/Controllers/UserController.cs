@@ -22,8 +22,8 @@ namespace Yugioh.Server.Controllers
             _logger = logger;
         }
 
-        [HttpGet("getuserbyemail"), Authorize(Roles = "Admin")]
-        public async Task<ActionResult<User>> GetUserByEmail(string email)
+        [HttpGet("getuserbyemail/{email}"), Authorize(Roles = "User, Admin")]
+        public async Task<ActionResult<UserResponse>> GetUserByEmail(string email)
         {
             var user = await _userRepoSingle.GetUserByEmailAsync(email);
             if (user == null)
@@ -32,19 +32,6 @@ namespace Yugioh.Server.Controllers
                 return NotFound("Controller: Error getting user by email");
             }
             _logger.LogInformation("Controller: User found by email");
-            return Ok(user);
-        }
-
-        [HttpGet("getuserbyid"), Authorize(Roles = "Admin")]
-        public async Task<ActionResult<User>> GetUserById(string id)
-        {
-            var user = await _userRepoSingle.GetUserByIdAsync(id);
-            if (user == null)
-            {
-                _logger.LogError("Controller: Error getting user by id");
-                return NotFound("Controller: Error getting user by id");
-            }
-            _logger.LogInformation("Controller: User found by id");
             return Ok(user);
         }
 
