@@ -80,8 +80,8 @@ namespace Yugioh.Server.Controllers
             return Ok(new AuthResponse(result.Email, result.Username));
         }
 
-        [HttpPost("changepassword"), Authorize(Roles = "User, Admin")]
-        public async Task<ActionResult> ChangePassword(ChangePasswordRequest request)
+        [HttpPatch("changepassword"), Authorize(Roles = "User, Admin")]
+        public async Task<ActionResult> ChangePassword([FromBody] ChangePasswordRequest request)
         {
             if (!ModelState.IsValid)
             {
@@ -110,8 +110,8 @@ namespace Yugioh.Server.Controllers
             return Ok();
         }
 
-        [HttpPost("changeemail"), Authorize(Roles = "User, Admin")]
-        public async Task<ActionResult> ChangeEmail(UpdateEmailRequest request)
+        [HttpPatch("changeemail"), Authorize(Roles = "User, Admin")]
+        public async Task<ActionResult> ChangeEmail([FromBody] UpdateEmailRequest request)
         {
             if (!ModelState.IsValid)
             {
