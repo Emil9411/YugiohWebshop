@@ -4,6 +4,6 @@ namespace Yugioh.Server.Services.UserRepository
 {
     public interface IUserRepoMultiple
     {
-        Task<IEnumerable<User>?> GetUsersAsync();
+        Task<IEnumerable<UserResponse>?> GetUsersAsync();
     }
 }
