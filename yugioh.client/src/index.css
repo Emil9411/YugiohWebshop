@@ -199,4 +199,15 @@ button {
 
 .swal-modal input{
     color: black;
+    background-color: transparent;
+}
+
+.swal-modal table {
+    color: black;
+    background-color: transparent;
+    border: none;
+    border-radius: 0;
+    box-shadow: none;
+    margin-left: auto;
+    margin-right: auto;
 }
