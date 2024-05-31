@@ -171,12 +171,12 @@ function ProfilePage() {
             if (oldPassword) {
                 swal({
                     text: 'Enter new password',
-                                content: {
-                                    element: 'input',
-                                    attributes: {
-                                        type: 'password',
-                                        placeholder: 'New password',
-                                    },
+                    content: {
+                        element: 'input',
+                        attributes: {
+                            type: 'password',
+                            placeholder: 'New password',
+                        },
                     },
                     buttons: true,
                 }).then((newPassword) => {
@@ -194,6 +194,145 @@ function ProfilePage() {
                         });
                     }
                 });
+            }
+        });
+    }
+
+    async function changePersonalInfo(updatedInfo) {
+        try {
+            const response = await fetch('/api/User/updateuser', {
+                method: 'PATCH',
+                credentials: 'include',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify({
+                    email: user.email,
+                    firstName: updatedInfo.firstName,
+                    lastName: updatedInfo.lastName,
+                    address: updatedInfo.address,
+                    city: updatedInfo.city,
+                    country: updatedInfo.country,
+                    postalCode: updatedInfo.postalCode,
+                    phoneNumber: updatedInfo.phoneNumber,
+                }),
+            });
+            if (response.ok) {
+                swal({
+                    title: 'Personal info updated',
+                    text: 'Your personal information has been updated',
+                    icon: 'success',
+                    button: 'OK',
+                }).then(() => {
+                    window.location.reload();
+                });
+            }
+        } catch (error) {
+            console.error(error);
+        }
+    }
+
+    function handleEditPersonalInfo() {
+        swal({
+            text: 'Edit personal information',
+            content: {
+                element: 'div',
+                attributes: {
+                    innerHTML: `
+                    <form id="editPersonalInfoForm">
+                    <table>
+                    <tbody>
+                    <tr>
+                    <td>
+                    <label for="firstName">First name:</label>
+                    </td>
+                    <td>
+                    <input type="text" id="firstName" name="firstName" value="${user.firstName ? user.firstName : ""}" required>
+                    </td>
+                    </tr>
+                    <tr>
+                    <td>
+                    <label for="lastName">Last name:</label>
+                    </td>
+                    <td>
+                    <input type="text" id="lastName" name="lastName" value="${user.lastName ? user.lastName : ""}" required>
+                    </td>
+                    </tr>
+                    <tr>
+                    <td>
+                    <label for="address">Address:</label>
+                    </td>
+                    <td>
+                    <input type="text" id="address" name="address" value="${user.address ? user.address : ""}" required>
+                    </td>
+                    </tr>
+                    <tr>
+                    <td>
+                    <label for="city">City:</label>
+                    </td>
+                    <td>
+                    <input type="text" id="city" name="city" value="${user.city ? user.city : ""}" required>
+                    </td>
+                    </tr>
+                    <tr>
+                    <td>
+                    <label for="country">Country:</label>
+                    </td>
+                    <td>
+                    <input type="text" id="country" name="country" value="${user.country ? user.country : ""}" required>
+                    </td>
+                    </tr>
+                    <tr>
+                    <td>
+                    <label for="postalCode">Postal code:</label>
+                    </td>
+                    <td>
+                    <input type="text" id="postalCode" name="postalCode" value="${user.postalCode ? user.postalCode : ""}" required>
+                    </td>
+                    </tr>
+                    <tr>
+                    <td>
+                    <label for="phoneNumber">Phone number:</label>
+                    </td>
+                    <td>
+                    <input type="text" id="phoneNumber" name="phoneNumber" value="${user.phoneNumber ? user.phoneNumber : ""}" required>
+                    </td>
+                    </tr>
+                    </tbody>
+                    </table>
+                    </form>
+                    `,
+                },
+            },
+            buttons: true,
+        }).then((willEdit) => {
+            if (willEdit) {
+                const form = document.getElementById('editPersonalInfoForm');
+                const formData = new FormData(form);
+                const updatedInfo = {};
+                let isValid = true;
+
+                // Client-side validation
+                for (const pair of formData.entries()) {
+                    const [fieldName, fieldValue] = pair;
+                    if (!fieldValue.trim()) {
+                        const necessaryField = fieldName === 'firstName' ? 'First name' : fieldName === 'lastName' ? 'Last name' : fieldName === 'address' ? 'Address' : fieldName === 'city' ? 'City' : fieldName === 'country' ? 'Country' : fieldName === 'postalCode' ? 'Postal code' : 'Phone number';
+                        swal({
+                            title: 'Error',
+                            text: `${necessaryField} is required`,
+                            icon: 'error',
+                        }).then(() => {
+                            handleEditPersonalInfo();
+                        });
+                        //isValid = false;
+                        //break;
+                    }
+                    updatedInfo[fieldName] = fieldValue;
+                }
+
+                if (isValid) {
+                    changePersonalInfo(updatedInfo);
+                } 
             }
         });
     }
@@ -254,19 +393,24 @@ function ProfilePage() {
                         <td colSpan="3" style={{ height: '20px' }}></td>
                     </tr>
                     <tr>
-                        <td>
-                            <button>Edit personal info</button>
+                        <td style={{ textAlign: 'center' }}>
+                            <button onClick={handleEditPersonalInfo}>
+                                Edit personal info
+                            </button>
                         </td>
-                        <td>
+                        <td style={{ textAlign: 'center' }}>
                             <button onClick={handleChangeEmail}>
                                 Change email
                             </button>
                         </td>
-                        <td>
+                        <td style={{ textAlign: 'center' }}>
                             <button onClick={handleChangePassword}>
                                 Change password
                             </button>
                         </td>
+                    </tr>
+                    <tr>
+                        <td colSpan="3" style={{ height: '10px' }}></td>
                     </tr>
                 </tbody>
             </table>
