@@ -1,11 +1,11 @@
-import React, { useRef } from 'react';
+import { useRef } from 'react';
 
 function ImageModal({ imageUrl, onClose }) {
     const modalRef = useRef(null);
 
     const handleClickOutside = (event) => {
         if (modalRef.current && !modalRef.current.contains(event.target)) {
-            onClose(); // Close the modal when clicked outside
+            onClose();
         }
     };
 
