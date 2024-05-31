@@ -188,3 +188,11 @@ button {
             transform: none;
             box-shadow: none;
         }
+
+.profile {
+    margin-top: 2rem;
+    text-align: left;
+    display: flex;
+    flex-direction: column;
+    gap: 2rem;
+}
