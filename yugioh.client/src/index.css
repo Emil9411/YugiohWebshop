@@ -197,7 +197,7 @@ button {
     gap: 2rem;
 }
 
-.swal-modal input{
+.swal-modal input {
     color: black;
     background-color: transparent;
 }
@@ -211,3 +211,14 @@ button {
     margin-left: auto;
     margin-right: auto;
 }
+
+.admin-operations {
+    background-color: transparent;
+    border: none;
+    border-radius: 0;
+    box-shadow: none;
+}
+
+    .admin-operations td {
+        padding: 1rem;
+    }
