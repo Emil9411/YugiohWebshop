@@ -62,7 +62,7 @@ namespace Yugioh.Server.Controllers
         }
 
         [HttpPatch("updateuser"), Authorize(Roles = "User, Admin")]
-        public async Task<ActionResult<AuthResult>> UpdateUser(UpdatePersonalDataRequest updatePersonalDataRequest)
+        public async Task<ActionResult<AuthResult>> UpdateUser([FromBody] UpdatePersonalDataRequest updatePersonalDataRequest)
         {
             var result = await _userRepoSingle.UpdateUserAsync(updatePersonalDataRequest);
             if (result == null)
