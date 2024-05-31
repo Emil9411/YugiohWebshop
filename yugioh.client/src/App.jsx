@@ -43,9 +43,6 @@ function App() {
         fetchUser();
     }, [location.pathname]);
 
-
-
-
     useEffect(() => {
         updateBackgroundClass(); // Set initial background class
         window.addEventListener('resize', updateBackgroundClass); // Update background class on resize
@@ -99,7 +96,9 @@ function App() {
                             <Link to="/spells">
                                 <button disabled={location.pathname === '/spells'}>Spell/Trap cards</button>
                             </Link>
-                            <button>Admin</button>
+                            <Link to="/admin">
+                                <button disabled={location.pathname === '/admin'}>Admin</button>
+                            </Link>
                             <LogoutButton />
                         </>
                     )}
@@ -107,9 +106,7 @@ function App() {
             </div>
             <Outlet />
         </div>
-
     );
-
 }
 
 export default App;
