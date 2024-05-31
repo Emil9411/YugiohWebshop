@@ -5,9 +5,13 @@ import '../index.css';
 function AdminPage() {
     const [user, setUser] = useState(null);
     const [loading, setLoading] = useState(true);
+
     const [showDatabaseOperations, setShowDatabaseOperations] = useState(false);
     const [showUserOperations, setShowUserOperations] = useState(false);
     const [showCartOperations, setShowCartOperations] = useState(false);
+
+    const [userList, setUserList] = useState([]);
+    const [users, setUsers] = useState(false);
 
     useEffect(() => {
         async function fetchUser() {
@@ -32,6 +36,27 @@ function AdminPage() {
         }
         fetchUser();
     }, []);
+
+    async function fetchUsers() {
+        try {
+            const response = await fetch("api/User/getusers", {
+                method: "GET",
+                credentials: "include",
+                headers: {
+                    "Content-Type": "application/json",
+                },
+            });
+            if (response.ok) {
+                const data = await response.json();
+                setUserList(data);
+                setUsers(true);
+            } else {
+                throw new Error("User list not fetched");
+            }
+        } catch (error) {
+            console.error(error);
+        }
+    }
 
     function handleFillDatabase() {
         swal({
@@ -130,9 +155,6 @@ function AdminPage() {
         });
     }
 
-
-
-
     if (loading) {
         return (
             <>
@@ -184,9 +206,82 @@ function AdminPage() {
                                 </td>
                             </tr>
                         </>
-                        ) : null}
+                    ) : showUserOperations ? (
+                        <>
+                            <tr>
+                                <td>
+                                        <button onClick={fetchUsers} disabled={users}>Get user list</button>
+                                </td>
+                                <td>
+                                    <button>Find user by email</button>
+                                </td>
+                                <td>
+                                    <button>Add new admin</button>
+                                </td>
+                            </tr>
+                        </>
+                    ) : null}
                 </tbody>
             </table>
+            {users ? (
+                <table className="user-list">
+                    <thead>
+                        <tr>
+                            <th>
+                                <h3>Username</h3>
+                            </th>
+                            <th>
+                                <h3>Email</h3>
+                            </th>
+                            <th>
+                                <h3>First name</h3>
+                            </th>
+                            <th>
+                                <h3>Last name</h3>
+                            </th>
+                            <th>
+                                <h3>Country</h3>
+                            </th>
+                            <th>
+                                <h3>City</h3>
+                            </th>
+                            <th>
+                                <h3>Address</h3>
+                            </th>
+                            <th>
+                                <h3>Postal code</h3>
+                            </th>
+                            <th>
+                                <h3>Phone number</h3>
+                            </th>
+                            <th colSpan="2">
+                                <h3>Actions</h3>
+                            </th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {userList.map((user, i) => (
+                            <tr key={i}>
+                                <td>{user.username}</td>
+                                <td>{user.email}</td>
+                                <td>{user.firstName}</td>
+                                <td>{user.lastName}</td>
+                                <td>{user.country}</td>
+                                <td>{user.city}</td>
+                                <td>{user.address}</td>
+                                <td>{user.postalCode}</td>
+                                <td>{user.phoneNumber}</td>
+                                <td>
+                                    <button>Edit</button>
+                                </td>
+                                <td>
+                                    <button>Delete</button>
+                                </td>
+                            </tr>
+                        ))}
+                    </tbody>
+                </table>
+            ) : null}
         </div>
     );
 }
