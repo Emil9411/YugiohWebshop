@@ -43,7 +43,7 @@ namespace Yugioh.Server.Services.UserRepository
             };
         }
 
-        public async Task<IEnumerable<User>?> GetUsersAsync()
+        public async Task<IEnumerable<UserResponse>?> GetUsersAsync()
         {
             var users = await _context.Users.ToListAsync();
             if (users.Count == 0)
@@ -52,7 +52,18 @@ namespace Yugioh.Server.Services.UserRepository
                 return null;
             }
             _logger.LogInformation("UserRepo: GetUsers: Users found");
-            return users;
+            return users.Select(user => new UserResponse
+            {
+                UserName = user.UserName,
+                Email = user.Email,
+                FirstName = user.FirstName,
+                LastName = user.LastName,
+                Country = user.Country,
+                City = user.City,
+                Address = user.Address,
+                PostalCode = user.PostalCode,
+                PhoneNumber = user.PhoneNumber
+            });
         }
 
         public async Task<AuthResult?> AddAdminUserAsync(RegistrationRequest registrationRequest)
