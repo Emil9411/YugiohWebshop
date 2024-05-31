@@ -9,6 +9,7 @@ import SpellTrapCardsPage from './pages/SpellTrapCardsPage.jsx'
 import RegistrationPage from './pages/RegistrationPage.jsx'
 import LoginPage from './pages/LoginPage.jsx'
 import ProfilePage from './pages/ProfilePage.jsx'
+import AdminPage from './pages/AdminPage.jsx'
 
 const router = createBrowserRouter([
     {
@@ -38,6 +39,10 @@ const router = createBrowserRouter([
             {
                 path: "/profile",
                 element: <ProfilePage />,
+            },
+            {
+                path: "/admin",
+                element: <AdminPage />,
             },
         ],
     },
