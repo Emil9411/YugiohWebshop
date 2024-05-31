@@ -20,29 +20,26 @@ namespace Yugioh.Server.Services.UserRepository
             _userManager = userManager;
         }
 
-        public async Task<User?> GetUserByEmailAsync(string email)
+        public async Task<UserResponse?> GetUserByEmailAsync(string email)
         {
             var user = await _context.Users.FirstOrDefaultAsync(u => u.Email == email);
-            _logger.LogInformation($"UserRepo: GetUserByEmail: User with email {user.Email} found");
             if (user == null)
             {
                 _logger.LogWarning($"UserRepo: GetUserByEmail: User with email {email} not found");
                 return null;
             }
             _logger.LogInformation($"UserRepo: GetUserByEmail: User with email {email} found");
-            return user;
-        }
-
-        public async Task<User?> GetUserByIdAsync(string id)
-        {
-            var user = await _context.Users.FirstOrDefaultAsync(u => u.Id == id);
-            if (user == null)
+            return new UserResponse
             {
-                _logger.LogWarning($"UserRepo: GetUserById: User with id {id} not found");
-                return null;
-            }
-            _logger.LogInformation($"UserRepo: GetUserById: User with id {id} found");
-            return user;
+                Email = user.Email,
+                FirstName = user.FirstName,
+                LastName = user.LastName,
+                Country = user.Country,
+                City = user.City,
+                Address = user.Address,
+                PostalCode = user.PostalCode,
+                PhoneNumber = user.PhoneNumber
+            };
         }
 
         public async Task<IEnumerable<User>?> GetUsersAsync()
