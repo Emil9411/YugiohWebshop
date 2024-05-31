@@ -85,7 +85,9 @@ function App() {
                             <Link to="/spells">
                                 <button disabled={location.pathname === '/spells'}>Spell/Trap cards</button>
                             </Link>
-                            <button>Profile</button>
+                            <Link to="/profile">
+                                <button disabled={location.pathname === '/profile'}>Profile</button>
+                            </Link>
                             <button>Cart</button>
                             <LogoutButton />
                         </>
