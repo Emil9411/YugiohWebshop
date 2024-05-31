@@ -1,9 +1,13 @@
 import { useEffect, useState } from 'react';
+import { useNavigate } from 'react-router-dom';
 import '../index.css';
+import swal from 'sweetalert';
 
 function ProfilePage() {
     const [user, setUser] = useState(null);
     const [loading, setLoading] = useState(true);
+
+    const navigate = useNavigate();
 
     useEffect(() => {
         async function fetchUser() {
@@ -50,6 +54,152 @@ function ProfilePage() {
         }
     }
 
+    async function changeEmail(newEmail) {
+        try {
+            const response = await fetch('/api/Auth/changeemail', {
+                method: 'PATCH',
+                credentials: 'include',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify({ email: user.email, newEmail }),
+            });
+            if (response.ok) {
+                const logoutResponse = await fetch('/api/Auth/logout', {
+                    method: 'POST',
+                    credentials: 'include',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                });
+                if (logoutResponse.ok) {
+                    swal({
+                        title: 'Email changed',
+                        text: 'Please log in again',
+                        icon: 'success',
+                        button: 'OK',
+                    }).then(() => {
+                        navigate('/');
+                        window.location.reload();
+                    });
+                } else {
+                    throw new Error('Logout failed');
+                }
+            }
+        } catch (error) {
+            console.error(error);
+        }
+    }
+
+    function handleChangeEmail() {
+        swal({
+            text: 'Enter new email',
+            content: {
+                element: 'input',
+                attributes: {
+                    type: 'email',
+                    placeholder: 'New email',
+                },
+            },
+            buttons: true,
+        }).then((value) => {
+            if (value) {
+                swal({
+                    title: 'Are you sure?',
+                    text: `Do you really want to change your email to ${value}?`,
+                    icon: 'warning',
+                    buttons: true,
+                    dangerMode: true,
+                }).then((willChange) => {
+                    if (willChange) {
+                        changeEmail(value);
+                    }
+                });
+            }
+        });
+    }
+
+    async function changePassword(oldPassword, newPassword) {
+        try {
+            const response = await fetch('/api/Auth/changepassword', {
+                method: 'PATCH',
+                credentials: 'include',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify({ email: user.email, oldPassword, newPassword }),
+            });
+            if (response.ok) {
+                const logoutResponse = await fetch('/api/Auth/logout', {
+                    method: 'POST',
+                    credentials: 'include',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                });
+                if (logoutResponse.ok) {
+                    swal({
+                        title: 'Password changed',
+                        text: 'Please log in again',
+                        icon: 'success',
+                        button: 'OK',
+                    }).then(() => {
+                        navigate('/');
+                        window.location.reload();
+                    });
+                } else {
+                    throw new Error('Logout failed');
+                }
+            }
+        } catch (error) {
+            console.error(error);
+        }
+    }
+
+    function handleChangePassword() {
+        swal({
+            text: 'Enter old password',
+            content: {
+                element: 'input',
+                attributes: {
+                    type: 'password',
+                    placeholder: 'Old password',
+                },
+            },
+            buttons: true,
+        }).then((oldPassword) => {
+            if (oldPassword) {
+                swal({
+                    text: 'Enter new password',
+                                content: {
+                                    element: 'input',
+                                    attributes: {
+                                        type: 'password',
+                                        placeholder: 'New password',
+                                    },
+                    },
+                    buttons: true,
+                }).then((newPassword) => {
+                    if (newPassword) {
+                        swal({
+                            title: 'Are you sure?',
+                            text: 'Do you really want to change your password?',
+                            icon: 'warning',
+                            buttons: true,
+                            dangerMode: true,
+                        }).then((willChange) => {
+                            if (willChange) {
+                                changePassword(oldPassword, newPassword);
+                            }
+                        });
+                    }
+                });
+            }
+        });
+    }
+
+
+
     if (loading) {
         return (
             <>
@@ -64,45 +214,62 @@ function ProfilePage() {
             <table>
                 <thead>
                     <tr>
-                        <th>Profile</th>
+                        <th colSpan="3" style={{ textAlign: 'center' }}>Personal information of {user.userName}</th>
                     </tr>
                 </thead>
                 <tbody>
                     <tr>
                         <td>Email:</td>
-                        <td>{user.email}</td>
+                        <td colSpan="2">{user.email}</td>
                     </tr>
                     <tr>
                         <td>First name:</td>
-                        <td>{user.firstName}</td>
+                        <td colSpan="2">{user.firstName}</td>
                     </tr>
                     <tr>
                         <td>Last name:</td>
-                        <td>{user.lastName}</td>
+                        <td colSpan="2">{user.lastName}</td>
                     </tr>
                     <tr>
                         <td>Address:</td>
-                        <td>{user.address}</td>
+                        <td colSpan="2">{user.address}</td>
                     </tr>
                     <tr>
                         <td>City:</td>
-                        <td>{user.city}</td>
+                        <td colSpan="2">{user.city}</td>
                     </tr>
                     <tr>
                         <td>Country:</td>
-                        <td>{user.country}</td>
+                        <td colSpan="2">{user.country}</td>
                     </tr>
                     <tr>
                         <td>Postal code:</td>
-                        <td>{user.postalCode}</td>
+                        <td colSpan="2">{user.postalCode}</td>
                     </tr>
                     <tr>
                         <td>Phone number:</td>
-                        <td>{user.phoneNumber}</td>
+                        <td colSpan="2">{user.phoneNumber}</td>
+                    </tr>
+                    <tr>
+                        <td colSpan="3" style={{ height: '20px' }}></td>
+                    </tr>
+                    <tr>
+                        <td>
+                            <button>Edit personal info</button>
+                        </td>
+                        <td>
+                            <button onClick={handleChangeEmail}>
+                                Change email
+                            </button>
+                        </td>
+                        <td>
+                            <button onClick={handleChangePassword}>
+                                Change password
+                            </button>
+                        </td>
                     </tr>
                 </tbody>
             </table>
-            <button>Edit </button>
             <table>
                 <thead>
                     <tr>
