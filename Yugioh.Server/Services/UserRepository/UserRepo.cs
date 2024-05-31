@@ -31,6 +31,7 @@ namespace Yugioh.Server.Services.UserRepository
             _logger.LogInformation($"UserRepo: GetUserByEmail: User with email {email} found");
             return new UserResponse
             {
+                UserName = user.UserName,
                 Email = user.Email,
                 FirstName = user.FirstName,
                 LastName = user.LastName,
