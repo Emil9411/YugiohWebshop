@@ -36,7 +36,7 @@ namespace Yugioh.Server.Controllers
         }
 
         [HttpGet("getusers"), Authorize(Roles = "Admin")]
-        public async Task<ActionResult<IEnumerable<User>>> GetAllUsers()
+        public async Task<ActionResult<IEnumerable<UserResponse>>> GetAllUsers()
         {
             var users = await _userRepoMultiple.GetUsersAsync();
             if (users == null)
