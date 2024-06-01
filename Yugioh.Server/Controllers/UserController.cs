@@ -87,7 +87,7 @@ namespace Yugioh.Server.Controllers
             return Ok(result);
         }
 
-        [HttpDelete("deleteuseradmin"), Authorize(Roles = "Admin")]
+        [HttpDelete("deleteuseradmin/{email}"), Authorize(Roles = "Admin")]
         public async Task<ActionResult<AuthResult>> DeleteUserAdmin(string email)
         {
             var result = await _userRepoSingle.DeleteUserAdminAsync(email);
