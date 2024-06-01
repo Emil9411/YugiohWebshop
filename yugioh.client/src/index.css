@@ -211,14 +211,3 @@ button {
     margin-left: auto;
     margin-right: auto;
 }
-
-.admin-operations {
-    background-color: transparent;
-    border: none;
-    border-radius: 0;
-    box-shadow: none;
-}
-
-    .admin-operations td {
-        padding: 1rem;
-    }

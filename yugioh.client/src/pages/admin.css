@@ -1,0 +1,38 @@
+.admin-operations {
+    background-color: transparent;
+    border: none;
+    border-radius: 0;
+    border-bottom: none;
+    box-shadow: none;
+    margin-left: auto;
+    margin-right: auto;
+    width: 40%;
+}
+
+    .admin-operations td {
+        padding: 1rem;
+    }
+
+.user-list {
+    width: 95%;
+    margin-left: auto;
+    margin-right: auto;
+    border-collapse: collapse;
+}
+
+    .user-list td {
+        text-align: left;
+        height: 70px;
+    }
+
+    .user-list td {
+        border: 1px solid lightgrey;
+    }
+
+    .user-list tr:nth-child(even) {
+        background-color: rgba(0,0,0,0.8);
+    }
+
+    .user-list td:last-child {
+        text-align: center;
+    }
