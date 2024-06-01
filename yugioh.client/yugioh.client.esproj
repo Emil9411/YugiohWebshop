@@ -10,6 +10,5 @@
   </PropertyGroup>
   <ItemGroup>
     <Folder Include="public\direction-arrows\" />
-    <Folder Include="src\pages\" />
   </ItemGroup>
 </Project>
