@@ -14,6 +14,9 @@ function AdminPage() {
     const [userList, setUserList] = useState([]);
     const [users, setUsers] = useState(false);
 
+    const [userToFind, setUserToFind] = useState(null);
+    const [userSearch, setUserSearch] = useState(false);
+
     useEffect(() => {
         async function fetchUser() {
             try {
@@ -50,6 +53,7 @@ function AdminPage() {
             if (response.ok) {
                 const data = await response.json();
                 setUserList(data);
+                setUserSearch(false);
                 setUsers(true);
             } else {
                 throw new Error("User list not fetched");
@@ -58,6 +62,133 @@ function AdminPage() {
             console.error(error);
         }
     }
+
+    async function findUserByEmail(email) {
+        try {
+            const response = await fetch(`api/User/getuserbyemail/${email}`, {
+                method: "GET",
+                credentials: "include",
+                headers: {
+                    "Content-Type": "application/json",
+                },
+            });
+            if (response.ok) {
+                const data = await response.json();
+                setUsers(false);
+                swal({
+                    text: "User details",
+                    content: {
+                        element: "div",
+                        attributes: {
+                            innerHTML: `
+                            <table>
+                            <tbody>
+                            <tr>
+                            <td>
+                            <label for="firstName">First name:</label>
+                            </td>
+                            <td>
+                            <p>${data.firstName ? data.firstName : "N/A"}</p>
+                            </td>
+                            </tr>
+                            <tr>
+                            <td>
+                            <label for="lastName">Last name:</label>
+                            </td>
+                            <td>
+                            <p>${data.lastName ? data.lastName : "N/A"}</p>
+                            </td>
+                            </tr>
+                            <tr>
+                            <td>
+                            <label for="address">Address:</label>
+                            </td>
+                            <td>
+                            <p>${data.address ? data.address : "N/A"}</p>
+                            </td>
+                            </tr>
+                            <tr>
+                            <td>
+                            <label for="city">City:</label>
+                            </td>
+                            <td>
+                            <p>${data.city ? data.city : "N/A"}</p>
+                            </td>
+                            </tr>
+                            <tr>
+                            <td>
+                            <label for="country">Country:</label>
+                            </td>
+                            <td>
+                            <p>${data.country ? data.country : "N/A"}</p>
+                            </td>
+                            </tr>
+                            <tr>
+                            <td>
+                            <label for="postalCode">Postal code:</label>
+                            </td>
+                            <td>
+                            <p>${data.postalCode ? data.postalCode : "N/A"}</p>
+                            </td>
+                            </tr>
+                            <tr>
+                            <td>
+                            <label for="phoneNumber">Phone number:</label>
+                            </td>
+                            <td>
+                            <p>${data.phoneNumber ? data.phoneNumber : "N/A"}</p>
+                            </td>
+                            </tr>
+                            </tbody>
+                            </table>
+                            `,
+                        },
+                    },
+                    buttons: {
+                        edit: {
+                            text: "Edit",
+                            value: "edit",
+                            visible: true,
+                            className: "edit-button",
+                        },
+                        delete: {
+                            text: "Delete",
+                            value: "delete",
+                            visible: true,
+                            className: "delete-button",
+                        },
+                        cancel: {
+                            text: "Cancel",
+                            value: "cancel",
+                            visible: true,
+                            className: "cancel-button",
+                        },
+                    },
+                }).then((value) => {
+                    switch (value) {
+                        case "edit":
+                            handleEditPersonalInfo(email);
+                            break;
+                        case "delete":
+                            handleDeleteUser(email);
+                            break;
+                        default:
+                            break;
+                    }
+                });
+            } else {
+                swal({
+                    title: 'Error',
+                    text: 'User not found',
+                    icon: 'error',
+                });
+                throw new Error("User not found");
+            }
+        } catch (error) {
+            console.error(error);
+        }
+    }
+
 
     function handleFillDatabase() {
         swal({
@@ -156,7 +287,7 @@ function AdminPage() {
         });
     }
 
-    async function changePersonalInfo(email, updatedInfo) {
+    async function changePersonalInfo(email, updatedInfo, individualUser) {
         try {
             const response = await fetch('/api/User/updateuser', {
                 method: 'PATCH',
@@ -182,7 +313,11 @@ function AdminPage() {
                     icon: 'success',
                     button: 'OK',
                 }).then(() => {
-                    fetchUsers();
+                    if (!individualUser) {
+                        fetchUsers();
+                    } else {
+                        findUserByEmail(email);
+                    }                    
                 });
             }
         } catch (error) {
@@ -190,8 +325,36 @@ function AdminPage() {
         }
     }
 
-    function handleEditPersonalInfo(index) {
-        const userToEdit = userList[index];
+    async function handleEditPersonalInfo(index) {
+        let userToEdit;
+        let individualUser;
+        if (typeof index === 'string') {
+            individualUser = true;
+            try {
+                const response = await fetch(`api/User/getuserbyemail/${index}`, {
+                    method: "GET",
+                    credentials: "include",
+                    headers: {
+                        "Content-Type": "application/json",
+                    },
+                });
+                if (response.ok) {
+                    userToEdit = await response.json();
+                } else {
+                    swal({
+                        title: 'Error',
+                        text: 'User not found',
+                        icon: 'error',
+                    });
+                    throw new Error("User not found");
+                }
+            } catch (error) {
+                console.error(error);
+            }
+        } else {
+            individualUser = false;
+            userToEdit = userList[index];
+        }
         swal({
             text: 'Edit personal information',
             content: {
@@ -270,8 +433,6 @@ function AdminPage() {
                 const formData = new FormData(form);
                 const updatedInfo = {};
                 let isValid = true;
-
-                // Client-side validation
                 for (const pair of formData.entries()) {
                     const [fieldName, fieldValue] = pair;
                     if (!fieldValue.trim()) {
@@ -288,15 +449,14 @@ function AdminPage() {
                     }
                     updatedInfo[fieldName] = fieldValue;
                 }
-
                 if (isValid) {
-                    changePersonalInfo(userToEdit.email, updatedInfo);
+                    changePersonalInfo(userToEdit.email, updatedInfo, individualUser);
                 }
             }
         });
     }
 
-    async function deleteUser(email) {
+    async function deleteUser(email, individualUser) {
         try {
             const response = await fetch(`/api/User/deleteuseradmin/${email}`, {
                 method: 'DELETE',
@@ -312,7 +472,13 @@ function AdminPage() {
                     icon: 'success',
                     button: 'OK',
                 }).then(() => {
-                    fetchUsers();
+                    if (!individualUser) {
+                        fetchUsers();
+                    } else {
+                        document.getElementById('userToFind').value = '';
+                        setUsers(false);
+                        setUserSearch(true);
+                    }
                 });
             }
         } catch (error) {
@@ -322,18 +488,35 @@ function AdminPage() {
 
 
     function handleDeleteUser(index) {
-        const userToDelete = userList[index];
-        swal({
-            title: 'Are you sure?',
-            text: 'User will be deleted',
-            icon: 'warning',
-            buttons: true,
-            dangerMode: true,
-        }).then((willDelete) => {
-            if (willDelete) {
-                deleteUser(userToDelete.email);
-            }
-        });
+        let individualUser;
+        if (typeof index !== 'number') {
+            individualUser = true;
+            swal({
+                title: 'Are you sure?',
+                text: 'User will be deleted',
+                icon: 'warning',
+                buttons: true,
+                dangerMode: true,
+            }).then((willDelete) => {
+                if (willDelete) {
+                    deleteUser(index, individualUser);
+                }
+            });
+        } else {
+            const userToDelete = userList[index];
+            individualUser = false;
+            swal({
+                title: 'Are you sure?',
+                text: 'User will be deleted',
+                icon: 'warning',
+                buttons: true,
+                dangerMode: true,
+            }).then((willDelete) => {
+                if (willDelete) {
+                    deleteUser(userToDelete.email, individualUser);
+                }
+            });
+        }
     }
 
     function viewUserDetails(index) {
@@ -407,7 +590,6 @@ function AdminPage() {
                     `,
                 },
             },
-            //need an edit, a delete and a cancel button
             buttons: {
                 edit: {
                     text: 'Edit',
@@ -440,6 +622,19 @@ function AdminPage() {
                     break;
             }
         });
+    }
+
+    function handleFindUserByEmail() {
+        const email = userToFind;
+        if (!email.trim()) {
+            swal({
+                title: 'Error',
+                text: 'Email is required',
+                icon: 'error',
+            });
+        } else {
+            findUserByEmail(email);
+        }
     }
 
     if (loading) {
@@ -500,7 +695,7 @@ function AdminPage() {
                                     <button onClick={fetchUsers} disabled={users}>Get user list</button>
                                 </td>
                                 <td>
-                                    <button>Find user by email</button>
+                                    <button onClick={() => setUserSearch(true)}>Find user by email</button>
                                 </td>
                                 <td>
                                     <button>Add new admin</button>
@@ -535,6 +730,26 @@ function AdminPage() {
                                 </td>
                             </tr>
                         ))}
+                    </tbody>
+                </table>
+            ) : userSearch ? (
+                <table>
+                    <tbody>
+                        <tr>
+                            <td>
+                                <h2>Search user by email:</h2>
+                            </td>
+                            <td>
+                                <input type="email" required onChange={(e) => setUserToFind(e.target.value)} id="userToFind" placeholder="Enter email"></input>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td>
+                            </td>
+                            <td>
+                                <button onClick={handleFindUserByEmail}>Find user</button>
+                            </td>
+                        </tr>
                     </tbody>
                 </table>
             ) : null}
