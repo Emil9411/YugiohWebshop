@@ -16,6 +16,7 @@ function AdminPage() {
 
     const [userToFind, setUserToFind] = useState(null);
     const [userSearch, setUserSearch] = useState(false);
+    const [addAdmin, setAddAdmin] = useState(false);
 
     useEffect(() => {
         async function fetchUser() {
@@ -317,7 +318,7 @@ function AdminPage() {
                         fetchUsers();
                     } else {
                         findUserByEmail(email);
-                    }                    
+                    }
                 });
             }
         } catch (error) {
@@ -637,6 +638,107 @@ function AdminPage() {
         }
     }
 
+    async function handleAddNewAdmin(adminToAdd) {
+        try {
+            const response = await fetch('/api/User/addadminuser', {
+                method: 'POST',
+                credentials: 'include',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify({
+                    email: adminToAdd.email,
+                    username: adminToAdd.username,
+                    password: adminToAdd.password
+                }),
+            });
+            if (response.ok) {
+                swal({
+                    title: 'Admin added',
+                    text: 'New admin has been added',
+                    icon: 'success',
+                }).then(() => {
+                    setAddAdmin(false);
+                });
+            }
+        } catch (error) {
+            console.error(error);
+        }
+    }
+
+    function addNewAdmin() {
+        setAddAdmin(true);
+        swal({
+            text: 'Add new admin',
+            content: {
+                element: 'div',
+                attributes: {
+                    innerHTML: `
+                    <form id="addNewAdminForm">
+                    <table>
+                    <tbody>
+                    <tr>
+                    <td>
+                    <label for="email">Email:</label>
+                    </td>
+                    <td>
+                    <input type="email" id="email" name="email" required>
+                    </td>
+                    </tr>
+                    <tr>
+                    <td>
+                    <label for="username">Username:</label>
+                    </td>
+                    <td>
+                    <input type="text" id="username" name="username" required>
+                    </td>
+                    </tr>
+                    <tr>
+                    <td>
+                    <label for="password">Password:</label>
+                    </td>
+                    <td>
+                    <input type="password" id="password" name="password" required>
+                    </td>
+                    </tr>
+                    </tbody>
+                    </table>
+                    </form>
+                    `,
+                },
+            },
+            buttons: true,
+        }).then((willAdd) => {
+            if (willAdd) {
+                const form = document.getElementById('addNewAdminForm');
+                const formData = new FormData(form);
+                const adminToAdd = {};
+                let isValid = true;
+                for (const pair of formData.entries()) {
+                    const [fieldName, fieldValue] = pair;
+                    if (!fieldValue.trim()) {
+                        const necessaryField = fieldName === 'email' ? 'Email' : fieldName === 'username' ? 'Username' : 'Password';
+                        swal({
+                            title: 'Error',
+                            text: `${necessaryField} is required`,
+                            icon: 'error',
+                        }).then(() => {
+                            addNewAdmin();
+                        });
+                        isValid = false;
+                        break;
+                    }
+                    adminToAdd[fieldName] = fieldValue;
+                }
+                if (isValid) {
+                    handleAddNewAdmin(adminToAdd);
+                }
+            } else {
+                setAddAdmin(false);
+            }
+        });
+    }
+
     if (loading) {
         return (
             <>
@@ -657,6 +759,8 @@ function AdminPage() {
                                 setShowDatabaseOperations(true);
                                 setShowUserOperations(false);
                                 setShowCartOperations(false);
+                                setUserSearch(false);
+                                setUsers(false);
                             }} disabled={showDatabaseOperations}>Database Operations</button>
                         </td>
                         <td>
@@ -671,6 +775,8 @@ function AdminPage() {
                                 setShowCartOperations(true);
                                 setShowDatabaseOperations(false);
                                 setShowUserOperations(false);
+                                setUserSearch(false);
+                                setUsers(false);
                             }} disabled={showCartOperations}>Cart Operations</button>
                         </td>
                     </tr>
@@ -695,10 +801,17 @@ function AdminPage() {
                                     <button onClick={fetchUsers} disabled={users}>Get user list</button>
                                 </td>
                                 <td>
-                                    <button onClick={() => setUserSearch(true)}>Find user by email</button>
+                                    <button onClick={() => {
+                                        setUserSearch(true);
+                                        setUsers(false);
+                                    }} disabled={userSearch}>Find user by email</button>
                                 </td>
                                 <td>
-                                    <button>Add new admin</button>
+                                    <button onClick={() => {
+                                        setUsers(false);
+                                        setUserSearch(false);
+                                        addNewAdmin();
+                                    }} disabled={addAdmin}>Add new admin</button>
                                 </td>
                             </tr>
                         </>
