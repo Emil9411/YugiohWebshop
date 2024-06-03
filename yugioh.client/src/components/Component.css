@@ -115,7 +115,6 @@ img {
 }
 
 .modal-image {
-    max-width: 85%;
-    width: 85%;
-    height: auto;
+    height: 85vh;
+    width: auto;
 }
