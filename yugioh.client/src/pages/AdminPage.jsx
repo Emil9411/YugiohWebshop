@@ -42,155 +42,6 @@ function AdminPage() {
         fetchUser();
     }, []);
 
-    async function fetchUsers() {
-        try {
-            const response = await fetch("api/User/getusers", {
-                method: "GET",
-                credentials: "include",
-                headers: {
-                    "Content-Type": "application/json",
-                },
-            });
-            if (response.ok) {
-                const data = await response.json();
-                setUserList(data);
-                setUserSearch(false);
-                setUsers(true);
-            } else {
-                throw new Error("User list not fetched");
-            }
-        } catch (error) {
-            console.error(error);
-        }
-    }
-
-    async function findUserByEmail(email) {
-        try {
-            const response = await fetch(`api/User/getuserbyemail/${email}`, {
-                method: "GET",
-                credentials: "include",
-                headers: {
-                    "Content-Type": "application/json",
-                },
-            });
-            if (response.ok) {
-                const data = await response.json();
-                setUsers(false);
-                swal({
-                    text: "User details",
-                    content: {
-                        element: "div",
-                        attributes: {
-                            innerHTML: `
-                            <table>
-                            <tbody>
-                            <tr>
-                            <td>
-                            <label for="firstName">First name:</label>
-                            </td>
-                            <td>
-                            <p>${data.firstName ? data.firstName : "N/A"}</p>
-                            </td>
-                            </tr>
-                            <tr>
-                            <td>
-                            <label for="lastName">Last name:</label>
-                            </td>
-                            <td>
-                            <p>${data.lastName ? data.lastName : "N/A"}</p>
-                            </td>
-                            </tr>
-                            <tr>
-                            <td>
-                            <label for="address">Address:</label>
-                            </td>
-                            <td>
-                            <p>${data.address ? data.address : "N/A"}</p>
-                            </td>
-                            </tr>
-                            <tr>
-                            <td>
-                            <label for="city">City:</label>
-                            </td>
-                            <td>
-                            <p>${data.city ? data.city : "N/A"}</p>
-                            </td>
-                            </tr>
-                            <tr>
-                            <td>
-                            <label for="country">Country:</label>
-                            </td>
-                            <td>
-                            <p>${data.country ? data.country : "N/A"}</p>
-                            </td>
-                            </tr>
-                            <tr>
-                            <td>
-                            <label for="postalCode">Postal code:</label>
-                            </td>
-                            <td>
-                            <p>${data.postalCode ? data.postalCode : "N/A"}</p>
-                            </td>
-                            </tr>
-                            <tr>
-                            <td>
-                            <label for="phoneNumber">Phone number:</label>
-                            </td>
-                            <td>
-                            <p>${data.phoneNumber ? data.phoneNumber : "N/A"}</p>
-                            </td>
-                            </tr>
-                            </tbody>
-                            </table>
-                            `,
-                        },
-                    },
-                    buttons: {
-                        edit: {
-                            text: "Edit",
-                            value: "edit",
-                            visible: true,
-                            className: "edit-button",
-                        },
-                        delete: {
-                            text: "Delete",
-                            value: "delete",
-                            visible: true,
-                            className: "delete-button",
-                        },
-                        cancel: {
-                            text: "Cancel",
-                            value: "cancel",
-                            visible: true,
-                            className: "cancel-button",
-                        },
-                    },
-                }).then((value) => {
-                    switch (value) {
-                        case "edit":
-                            handleEditPersonalInfo(email);
-                            break;
-                        case "delete":
-                            handleDeleteUser(email);
-                            break;
-                        default:
-                            break;
-                    }
-                });
-            } else {
-                swal({
-                    title: 'Error',
-                    text: 'User not found',
-                    icon: 'error',
-                });
-                throw new Error("User not found");
-            }
-        } catch (error) {
-            console.error(error);
-        }
-    }
-
-
     function handleFillDatabase() {
         swal({
             title: "Are you sure?",
@@ -222,7 +73,6 @@ function AdminPage() {
             }
         });
     }
-
     function handleUpdateDatabase() {
         swal({
             title: "Are you sure?",
@@ -255,7 +105,6 @@ function AdminPage() {
             }
         });
     }
-
     function handleClearDatabase() {
         swal({
             title: "Are you sure?",
@@ -287,45 +136,103 @@ function AdminPage() {
             }
         });
     }
-
-    async function changePersonalInfo(email, updatedInfo, individualUser) {
-        try {
-            const response = await fetch('/api/User/updateuser', {
-                method: 'PATCH',
-                credentials: 'include',
-                headers: {
-                    'Content-Type': 'application/json',
+    function createUserDetailsTable(user) {
+        return `
+        <table>
+        <tbody>
+        <tr><td><label for="firstName">First name:</label></td><td><p>${user.firstName || 'N/A'}</p></td></tr>
+        <tr><td><label for="lastName">Last name:</label></td><td><p>${user.lastName || 'N/A'}</p></td></tr>
+        <tr><td><label for="address">Address:</label></td><td><p>${user.address || 'N/A'}</p></td></tr>
+        <tr><td><label for="city">City:</label></td><td><p>${user.city || 'N/A'}</p></td></tr>
+        <tr><td><label for="country">Country:</label></td><td><p>${user.country || 'N/A'}</p></td></tr>
+        <tr><td><label for="postalCode">Postal code:</label></td><td><p>${user.postalCode || 'N/A'}</p></td></tr>
+        <tr><td><label for="phoneNumber">Phone number:</label></td><td><p>${user.phoneNumber || 'N/A'}</p></td></tr>
+        </tbody>
+        </table>
+    `;
+    }
+    function showUserDetails(user, index) {
+        swal({
+            text: 'User details',
+            content: {
+                element: 'div',
+                attributes: {
+                    innerHTML: createUserDetailsTable(user),
                 },
-                body: JSON.stringify({
-                    email: email,
-                    firstName: updatedInfo.firstName,
-                    lastName: updatedInfo.lastName,
-                    address: updatedInfo.address,
-                    city: updatedInfo.city,
-                    country: updatedInfo.country,
-                    postalCode: updatedInfo.postalCode,
-                    phoneNumber: updatedInfo.phoneNumber,
-                }),
+            },
+            buttons: {
+                edit: { text: 'Edit', value: 'edit', visible: true, className: 'edit-button' },
+                delete: { text: 'Delete', value: 'delete', visible: true, className: 'delete-button' },
+                cancel: { text: 'Cancel', value: 'cancel', visible: true, className: 'cancel-button' },
+            },
+        }).then((value) => {
+            switch (value) {
+                case 'edit':
+                    handleEditPersonalInfo(index);
+                    break;
+                case 'delete':
+                    handleDeleteUser(index);
+                    break;
+                default:
+                    break;
+            }
+        });
+    }
+    async function fetchUsers() {
+        try {
+            const response = await fetch("api/User/getusers", {
+                method: "GET",
+                credentials: "include",
+                headers: {
+                    "Content-Type": "application/json",
+                },
             });
             if (response.ok) {
-                swal({
-                    title: 'Personal info updated',
-                    text: 'Your personal information has been updated',
-                    icon: 'success',
-                    button: 'OK',
-                }).then(() => {
-                    if (!individualUser) {
-                        fetchUsers();
-                    } else {
-                        findUserByEmail(email);
-                    }
-                });
+                const data = await response.json();
+                setUserList(data);
+                setUserSearch(false);
+                setUsers(true);
+            } else {
+                throw new Error("User list not fetched");
             }
         } catch (error) {
             console.error(error);
         }
     }
-
+    async function findUserByEmail(email) {
+        try {
+            const response = await fetch(`api/User/getuserbyemail/${email}`, {
+                method: "GET",
+                credentials: "include",
+                headers: { "Content-Type": "application/json" },
+            });
+            if (response.ok) {
+                const data = await response.json();
+                showUserDetails(data, email);
+            } else {
+                swal({ title: 'Error', text: 'User not found', icon: 'error' });
+                throw new Error("User not found");
+            }
+        } catch (error) {
+            console.error(error);
+        }
+    }
+    function handleFindUserByEmail() {
+        const email = userToFind;
+        if (!email.trim()) {
+            swal({
+                title: 'Error',
+                text: 'Email is required',
+                icon: 'error',
+            });
+        } else {
+            findUserByEmail(email);
+        }
+    }
+    function viewUserDetails(index) {
+        const userToView = userList[index];
+        showUserDetails(userToView, index);
+    }
     async function handleEditPersonalInfo(index) {
         let userToEdit;
         let individualUser;
@@ -456,7 +363,43 @@ function AdminPage() {
             }
         });
     }
-
+    async function changePersonalInfo(email, updatedInfo, individualUser) {
+        try {
+            const response = await fetch('/api/User/updateuser', {
+                method: 'PATCH',
+                credentials: 'include',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify({
+                    email: email,
+                    firstName: updatedInfo.firstName,
+                    lastName: updatedInfo.lastName,
+                    address: updatedInfo.address,
+                    city: updatedInfo.city,
+                    country: updatedInfo.country,
+                    postalCode: updatedInfo.postalCode,
+                    phoneNumber: updatedInfo.phoneNumber,
+                }),
+            });
+            if (response.ok) {
+                swal({
+                    title: 'Personal info updated',
+                    text: 'Your personal information has been updated',
+                    icon: 'success',
+                    button: 'OK',
+                }).then(() => {
+                    if (!individualUser) {
+                        fetchUsers();
+                    } else {
+                        findUserByEmail(email);
+                    }
+                });
+            }
+        } catch (error) {
+            console.error(error);
+        }
+    }
     async function deleteUser(email, individualUser) {
         try {
             const response = await fetch(`/api/User/deleteuseradmin/${email}`, {
@@ -486,8 +429,6 @@ function AdminPage() {
             console.error(error);
         }
     }
-
-
     function handleDeleteUser(index) {
         let individualUser;
         if (typeof index !== 'number') {
@@ -519,153 +460,6 @@ function AdminPage() {
             });
         }
     }
-
-    function viewUserDetails(index) {
-        const userToView = userList[index];
-        swal({
-            text: 'User details',
-            content: {
-                element: 'div',
-                attributes: {
-                    innerHTML: `
-                    <table>
-                    <tbody>
-                    <tr>
-                    <td>
-                    <label for="firstName">First name:</label>
-                    </td>
-                    <td>
-                    <p>${userToView.firstName ? userToView.firstName : 'N/A'}</p>
-                    </td>
-                    </tr>
-                    <tr>
-                    <td>
-                    <label for="lastName">Last name:</label>
-                    </td>
-                    <td>
-                    <p>${userToView.lastName ? userToView.lastName : 'N/A'}</p>
-                    </td>
-                    </tr>
-                    <tr>
-                    <td>
-                    <label for="address">Address:</label>
-                    </td>
-                    <td>
-                    <p>${userToView.address ? userToView.address : 'N/A'}</p>
-                    </td>
-                    </tr>
-                    <tr>
-                    <td>
-                    <label for="city">City:</label>
-                    </td>
-                    <td>
-                    <p>${userToView.city ? userToView.city : 'N/A'}</p>
-                    </td>
-                    </tr>
-                    <tr>
-                    <td>
-                    <label for="country">Country:</label>
-                    </td>
-                    <td>
-                    <p>${userToView.country ? userToView.country : 'N/A'}</p>
-                    </td>
-                    </tr>
-                    <tr>
-                    <td>
-                    <label for="postalCode">Postal code:</label>
-                    </td>
-                    <td>
-                    <p>${userToView.postalCode ? userToView.postalCode : 'N/A'}</p>
-                    </td>
-                    </tr>
-                    <tr>
-                    <td>
-                    <label for="phoneNumber">Phone number:</label>
-                    </td>
-                    <td>
-                    <p>${userToView.phoneNumber ? userToView.phoneNumber : 'N/A'}</p>
-                    </td>
-                    </tr>
-                    </tbody>
-                    </table>
-                    `,
-                },
-            },
-            buttons: {
-                edit: {
-                    text: 'Edit',
-                    value: 'edit',
-                    visible: true,
-                    className: 'edit-button',
-                },
-                delete: {
-                    text: 'Delete',
-                    value: 'delete',
-                    visible: true,
-                    className: 'delete-button',
-                },
-                cancel: {
-                    text: 'Cancel',
-                    value: 'cancel',
-                    visible: true,
-                    className: 'cancel-button',
-                },
-            },
-        }).then((value) => {
-            switch (value) {
-                case 'edit':
-                    handleEditPersonalInfo(index);
-                    break;
-                case 'delete':
-                    handleDeleteUser(index);
-                    break;
-                default:
-                    break;
-            }
-        });
-    }
-
-    function handleFindUserByEmail() {
-        const email = userToFind;
-        if (!email.trim()) {
-            swal({
-                title: 'Error',
-                text: 'Email is required',
-                icon: 'error',
-            });
-        } else {
-            findUserByEmail(email);
-        }
-    }
-
-    async function handleAddNewAdmin(adminToAdd) {
-        try {
-            const response = await fetch('/api/User/addadminuser', {
-                method: 'POST',
-                credentials: 'include',
-                headers: {
-                    'Content-Type': 'application/json',
-                },
-                body: JSON.stringify({
-                    email: adminToAdd.email,
-                    username: adminToAdd.username,
-                    password: adminToAdd.password
-                }),
-            });
-            if (response.ok) {
-                swal({
-                    title: 'Admin added',
-                    text: 'New admin has been added',
-                    icon: 'success',
-                }).then(() => {
-                    setAddAdmin(false);
-                });
-            }
-        } catch (error) {
-            console.error(error);
-        }
-    }
-
     function addNewAdmin() {
         setAddAdmin(true);
         swal({
@@ -737,6 +531,33 @@ function AdminPage() {
                 setAddAdmin(false);
             }
         });
+    }
+    async function handleAddNewAdmin(adminToAdd) {
+        try {
+            const response = await fetch('/api/User/addadminuser', {
+                method: 'POST',
+                credentials: 'include',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify({
+                    email: adminToAdd.email,
+                    username: adminToAdd.username,
+                    password: adminToAdd.password
+                }),
+            });
+            if (response.ok) {
+                swal({
+                    title: 'Admin added',
+                    text: 'New admin has been added',
+                    icon: 'success',
+                }).then(() => {
+                    setAddAdmin(false);
+                });
+            }
+        } catch (error) {
+            console.error(error);
+        }
     }
 
     if (loading) {
