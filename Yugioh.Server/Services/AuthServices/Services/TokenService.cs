@@ -79,10 +79,9 @@ namespace Yugioh.Server.Services.AuthServices.Services
 
                 var claims = new List<Claim>
                 {
-                    new(JwtRegisteredClaimNames.Sub, "TokenForTheApiWithAuth"),
+                    new(JwtRegisteredClaimNames.Sub, user.Id),
                     new(JwtRegisteredClaimNames.Jti, Guid.NewGuid().ToString()),
                     new(JwtRegisteredClaimNames.Iat, DateTime.UtcNow.ToString(CultureInfo.InvariantCulture)),
-                    new(ClaimTypes.NameIdentifier, user.Id),
                     new(ClaimTypes.Name, user.UserName),
                     new(ClaimTypes.Email, user.Email)
                 };
