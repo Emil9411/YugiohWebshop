@@ -14,6 +14,7 @@ using Yugioh.Server.Services.AuthServices.Seeder;
 using Yugioh.Server.Services.AuthServices.Services;
 using Yugioh.Server.Services.BusinessLogic;
 using Yugioh.Server.Services.CardRepository;
+using Yugioh.Server.Services.CartOrderRepository;
 using Yugioh.Server.Services.JsonProcess;
 using Yugioh.Server.Services.UserRepository;
 using Yugioh.Server.Utilities;
@@ -77,6 +78,8 @@ void AddServices()
     builder.Services.AddScoped<IUserRepoSingle, UserRepo>();
     builder.Services.AddScoped<IUserRepoMultiple, UserRepo>();
     builder.Services.AddScoped<AuthSeeder>();
+    builder.Services.AddScoped<ICartRepo, CartOrderRepo>();
+    builder.Services.AddScoped<IOrderRepo, CartOrderRepo>();
     builder.Services.AddSingleton<IYugiohApiAllCard, YugiohApi>();
     builder.Services.AddSingleton<IYugiohApiSingleCard, YugiohApi>();
     builder.Services.AddSingleton<IJsonProcessAllCard, YugiohJsonProcessor>();
