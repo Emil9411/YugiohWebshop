@@ -28,10 +28,10 @@ namespace Yugioh.Server.Controllers
             var user = await _userRepoSingle.GetUserByEmailAsync(email);
             if (user == null)
             {
-                _logger.LogError("Controller: Error getting user by email");
-                return NotFound("Controller: Error getting user by email");
+                _logger.LogError("UserContoller: GetUserByEmail: Error getting user by email");
+                return NotFound("UserContoller: GetUserByEmail: Error getting user by email");
             }
-            _logger.LogInformation("Controller: User found by email");
+            _logger.LogInformation("UserContoller: GetUserByEmail: User found by email");
             return Ok(user);
         }
 
@@ -41,10 +41,10 @@ namespace Yugioh.Server.Controllers
             var users = await _userRepoMultiple.GetUsersAsync();
             if (users == null)
             {
-                _logger.LogError("Controller: Error getting all users");
-                return NotFound("Controller: Error getting all users");
+                _logger.LogError("UserContoller: GetAllUsers: Error getting all users");
+                return NotFound("UserContoller: GetAllUsers: Error getting all users");
             }
-            _logger.LogInformation("Controller: All users found");
+            _logger.LogInformation("UserContoller: GetAllUsers: All users found");
             return Ok(users);
         }
 
@@ -54,10 +54,10 @@ namespace Yugioh.Server.Controllers
             var result = await _userRepoSingle.AddAdminUserAsync(registrationRequest);
             if (result == null)
             {
-                _logger.LogError($"Controller: Error adding admin user {registrationRequest.Email}");
-                return BadRequest($"Controller: Error adding admin user {registrationRequest.Email}");
+                _logger.LogError($"UserController: AddAdminUser: Error adding admin user {registrationRequest.Email}");
+                return BadRequest($"UserController: AddAdminUser: Error adding admin user {registrationRequest.Email}");
             }
-            _logger.LogInformation($"Controller: Admin user added {registrationRequest.Email}");
+            _logger.LogInformation($"UserController: AddAdminUser: Admin user added {registrationRequest.Email}");
             return Ok(result);
         }
 
@@ -67,10 +67,10 @@ namespace Yugioh.Server.Controllers
             var result = await _userRepoSingle.UpdateUserAsync(updatePersonalDataRequest);
             if (result == null)
             {
-                _logger.LogError("Controller: Error updating user");
-                return BadRequest("Controller: Error updating user");
+                _logger.LogError("UserController: UpdateUser: Error updating user");
+                return BadRequest("UserController: UpdateUser: Error updating user");
             }
-            _logger.LogInformation("Controller: User updated");
+            _logger.LogInformation("UserController: UpdateUser: User updated");
             return Ok(result);
         }
 
@@ -80,10 +80,10 @@ namespace Yugioh.Server.Controllers
             var result = await _userRepoSingle.DeleteUserAsync(authRequest);
             if (result == null)
             {
-                _logger.LogError("Controller: Error deleting user");
-                return BadRequest("Controller: Error deleting user");
+                _logger.LogError("UserController: DeleteUser: Error deleting user");
+                return BadRequest("UserController: DeleteUser: Error deleting user");
             }
-            _logger.LogInformation("Controller: User deleted");
+            _logger.LogInformation("UserController: DeleteUser: User deleted");
             return Ok(result);
         }
 
@@ -93,10 +93,10 @@ namespace Yugioh.Server.Controllers
             var result = await _userRepoSingle.DeleteUserAdminAsync(email);
             if (result == null)
             {
-                _logger.LogError("Controller: Error deleting user");
-                return BadRequest("Controller: Error deleting user");
+                _logger.LogError("UserController: DeleteUserAdmin: Error deleting user");
+                return BadRequest("UserController: DeleteUserAdmin: Error deleting user");
             }
-            _logger.LogInformation("Controller: User deleted");
+            _logger.LogInformation("UserController: DeleteUserAdmin: User deleted");
             return Ok(result);
         }
     }
