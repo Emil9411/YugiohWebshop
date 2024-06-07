@@ -147,6 +147,22 @@ namespace Yugioh.Server.Services.CartOrderRepository
             return order;
         }
 
+        public async Task DeleteCarts(string userId)
+        {
+            var carts = await _context.Carts.Where(cart => cart.UserId == userId).ToListAsync();
+            if (carts == null)
+            {
+                _logger.LogInformation($"No carts found for user {userId}");
+                return;
+            }
+            foreach (var cart in carts)
+            {
+                _context.Carts.Remove(cart);
+            }
+            _logger.LogInformation($"Carts deleted for user {userId}");
+            await _context.SaveChangesAsync();
+        }
+
         public async Task<Order> GetOrder(int orderId)
         {
             _logger.LogInformation($"Getting order {orderId}");
