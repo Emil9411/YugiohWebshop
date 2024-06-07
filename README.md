@@ -3,7 +3,7 @@
 ## Table of contents
 - [Introduction](#introduction)
 - [Usage](#usage)
-- [API](#api)]
+- [API](#api)
 - [Used external API](#used-external-api)
 
 ## Introduction
@@ -22,31 +22,31 @@ Meanwhile, the admin can login. After logging in, the admin can fill up the data
 The API can be used to get data from the database. The API has the following endpoints:
 
 ### Card
-- `GET``api/Card/filldatabase` - Fill the database with cards. Admin only.
-- `PATCH``api/Card/updatedatabase` - Update the database with cards. Admin only.
-- `DELETE``api/Card/cleandatabase` - Clear the database with cards. Admin only.
-- `GET``api/Card/allcards` - Get all cards. Anyone.
-- `GET``api/Card/allmonstercards` - Get all monster cards. User and Admin.
-- `GET``api/Card/allspellcards` - Get all spell cards. User and Admin.
-- `GET``api/Card/cardbyname/{name}` - Get a card by name. User and Admin.
-- `GET``api/Card/cardbyid/{id}` - Get a card by id. User and Admin.
-- `GET``api/Card/randomcard` - Get a random card. Anyone.
+- `GET` `api/Card/filldatabase` - Fill the database with cards. Admin only.
+- `PATCH` `api/Card/updatedatabase` - Update the database with cards. Admin only.
+- `DELETE` `api/Card/cleandatabase` - Clear the database with cards. Admin only.
+- `GET` `api/Card/allcards` - Get all cards. Anyone.
+- `GET` `api/Card/allmonstercards` - Get all monster cards. User and Admin.
+- `GET` `api/Card/allspellcards` - Get all spell cards. User and Admin.
+- `GET` `api/Card/cardbyname/{name}` - Get a card by name. User and Admin.
+- `GET` `api/Card/cardbyid/{id}` - Get a card by id. User and Admin.
+- `GET` `api/Card/randomcard` - Get a random card. Anyone.
 
 ### Auth
-- `POST``api/Auth/register` - Register a user. Anyone.
-- `POST``api/Auth/login` - Login a user. Anyone.
-- `PATCH``api/Auth/changepassword` - Change the password of a user. User and Admin.
-- `PATCH``api/Auth/changeemail` - Change the email of a user. User and Admin.
-- `GET``api/Auth/whoami` - Get the user that is logged in. User and Admin.
-- `POST``api/Auth/logout` - Logout a user. User and Admin.
+- `POST` `api/Auth/register` - Register a user. Anyone.
+- `POST` `api/Auth/login` - Login a user. Anyone.
+- `PATCH` `api/Auth/changepassword` - Change the password of a user. User and Admin.
+- `PATCH` `api/Auth/changeemail` - Change the email of a user. User and Admin.
+- `GET` `api/Auth/whoami` - Get the user that is logged in. User and Admin.
+- `POST` `api/Auth/logout` - Logout a user. User and Admin.
 
 ### User
-- `GET``api/User/getusers` - Get all users. Admin only.
-- `GET``api/User/getuserbyemail/{email}` - Get a user by email. User and Admin.
-- `POST``api/User/addadminuser` - Add an admin user. Admin only.
-- `DELETE``api/User/deleteuser/{email}` - Delete a user by email. User and Admin.
-- `PATCH``api/User/updateuser` - Update a user. User and Admin.
-- `DELETE``api/User/deleteuseradmin/{email}` - Delete a user by email. Admin only.}
+- `GET` `api/User/getusers` - Get all users. Admin only.
+- `GET` `api/User/getuserbyemail/{email}` - Get a user by email. User and Admin.
+- `POST` `api/User/addadminuser` - Add an admin user. Admin only.
+- `DELETE` `api/User/deleteuser/{email}` - Delete a user by email. User and Admin.
+- `PATCH` `api/User/updateuser` - Update a user. User and Admin.
+- `DELETE` `api/User/deleteuseradmin/{email}` - Delete a user by email. Admin only.}
 
 ## Used external API
 The webshop uses the [Yugioh API](https://db.ygoprodeck.com/api-guide/) to get the cards.
