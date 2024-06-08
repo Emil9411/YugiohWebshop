@@ -195,7 +195,8 @@ namespace Yugioh.Server.Services.JsonProcess
                     Attribute = frameType == "spell" ? "SPELL" : frameType == "trap" ? "TRAP" : null,
                     Archetype = archetype == "roid" ? "Roid" : archetype == "tellarknight" ? "Tellarknight" : archetype == "with Eyes of Blue" ? "Blue-Eyes" : archetype,
                     YgoProDeckUrl = GetPropertyValue<string>(card, "ygoprodeck_url"),
-                    ImageUrl = GetPropertyValueFromArray<string>(card, "card_images", 0, "image_url")
+                    ImageUrl = GetPropertyValueFromArray<string>(card, "card_images", 0, "image_url"),
+                    Inventory = 0
                 };
 
                 if (card.TryGetProperty("card_prices", out var price))
@@ -219,7 +220,8 @@ namespace Yugioh.Server.Services.JsonProcess
                     YgoProDeckUrl = GetPropertyValue<string>(card, "ygoprodeck_url"),
                     ImageUrl = GetPropertyValueFromArray<string>(card, "card_images", 0, "image_url"),
                     Attack = GetPropertyValue<int>(card, "atk"),
-                    Attribute = GetPropertyValue<string>(card, "attribute")
+                    Attribute = GetPropertyValue<string>(card, "attribute"),
+                    Inventory = 0
                 };
 
                 if (frameType == "link")
