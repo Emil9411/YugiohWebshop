@@ -173,6 +173,21 @@ namespace Yugioh.Server.Services.CartOrderRepository
             return cart;
         }
 
+        public async Task<Cart> UpdateCart(string userId, Cart cart)
+        {
+            var userCart = await GetCart(userId);
+            if (userCart == null)
+            {
+                _logger.LogInformation($"Cart not found for user {userId}");
+                return null;
+            }
+            userCart.ShippingPrice = cart.ShippingPrice;
+            userCart.DiscountPercent = cart.DiscountPercent;
+            await _context.SaveChangesAsync();
+            _logger.LogInformation($"Cart updated for user {userId}");
+            return userCart;
+        }
+
         public async Task DeleteCarts(string userId)
         {
             var carts = await _context.Carts.Where(cart => cart.UserId == userId).ToListAsync();

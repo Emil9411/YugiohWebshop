@@ -22,5 +22,6 @@ namespace Yugioh.Server.Services.CartOrderRepository
         Task<Cart> CheckoutCart(string userId);
         // Delete the carts of a user (admin only)
         Task DeleteCarts(string userId);
+        Task<Cart> UpdateCart(string userId, Cart cart);
     }
 }
