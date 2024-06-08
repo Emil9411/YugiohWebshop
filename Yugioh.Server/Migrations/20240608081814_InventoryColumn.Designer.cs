@@ -3,6 +3,7 @@ using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using Yugioh.Server.Context;
 
@@ -11,9 +12,11 @@ using Yugioh.Server.Context;
 namespace Yugioh.Server.Migrations
 {
     [DbContext(typeof(CardsContext))]
-    partial class CardsContextModelSnapshot : ModelSnapshot
+    [Migration("20240608081814_InventoryColumn")]
+    partial class InventoryColumn
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -157,14 +160,8 @@ namespace Yugioh.Server.Migrations
                     b.Property<DateTime>("CreatedAt")
                         .HasColumnType("datetime2");
 
-                    b.Property<double>("DiscountPercent")
-                        .HasColumnType("float");
-
                     b.Property<bool>("IsCheckedOut")
                         .HasColumnType("bit");
-
-                    b.Property<double>("ShippingPrice")
-                        .HasColumnType("float");
 
                     b.Property<DateTime>("UpdatedAt")
                         .HasColumnType("datetime2");
@@ -191,9 +188,6 @@ namespace Yugioh.Server.Migrations
 
                     b.Property<int>("CartId")
                         .HasColumnType("int");
-
-                    b.Property<bool>("HasInInventory")
-                        .HasColumnType("bit");
 
                     b.Property<int>("ProductId")
                         .HasColumnType("int");
@@ -236,9 +230,6 @@ namespace Yugioh.Server.Migrations
 
                     b.Property<DateTime>("CreatedAt")
                         .HasColumnType("datetime2");
-
-                    b.Property<string>("DiscountPercent")
-                        .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("Email")
                         .HasColumnType("nvarchar(max)");

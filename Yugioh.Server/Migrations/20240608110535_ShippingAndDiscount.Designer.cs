@@ -3,6 +3,7 @@ using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using Yugioh.Server.Context;
 
@@ -11,9 +12,11 @@ using Yugioh.Server.Context;
 namespace Yugioh.Server.Migrations
 {
     [DbContext(typeof(CardsContext))]
-    partial class CardsContextModelSnapshot : ModelSnapshot
+    [Migration("20240608110535_ShippingAndDiscount")]
+    partial class ShippingAndDiscount
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
