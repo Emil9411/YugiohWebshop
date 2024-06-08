@@ -10,6 +10,7 @@ namespace Yugioh.Server.Model.CartModels
         public int CartId { get; set; }
         public int ProductId { get; set; }
         public int Quantity { get; set; }
+        public bool HasInInventory { get; set; }
         public string? Type { get; set; }
         public virtual Cart? Cart { get; set; }
         public virtual MonsterCard? MonsterProduct { get; set; }
