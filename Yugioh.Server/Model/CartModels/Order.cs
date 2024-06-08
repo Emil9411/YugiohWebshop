@@ -18,6 +18,7 @@ namespace Yugioh.Server.Model.CartModels
         public string? PaymentMethod { get; set; }
         public string? PaymentResult { get; set; }
         public string? ShippingPrice { get; set; }
+        public string? DiscountPercent { get; set; }
         public string? TotalPrice { get; set; }
         public DateTime CreatedAt { get; set; } = DateTime.Now;
         public DateTime UpdatedAt { get; set; } = DateTime.Now;
@@ -35,13 +36,32 @@ namespace Yugioh.Server.Model.CartModels
             UpdateTimestamp();
         }
 
-        public void SetTotalPrice()
+        public void SetTotalPrice(double shipping, double discountPercent)
         {
             if (Cart == null)
             {
                 return;
             }
-            TotalPrice = Cart.GetTotalPrice().ToString();
+            if (shipping == 0 && discountPercent == 0)
+            {
+                ShippingPrice = "0";
+                TotalPrice = Cart.GetTotalPrice().ToString();
+            }
+            else if (shipping == 0 && discountPercent != 0)
+            {
+                ShippingPrice = "0";
+                TotalPrice = (Cart.GetTotalPrice() * (1 - discountPercent / 100)).ToString();
+            }
+            else if (shipping != 0 && discountPercent == 0)
+            {
+                ShippingPrice = shipping.ToString();
+                TotalPrice = (Cart.GetTotalPrice() + shipping).ToString();
+            }
+            else
+            {
+                ShippingPrice = shipping.ToString();
+                TotalPrice = (Cart.GetTotalPrice() * (1 - discountPercent / 100) + shipping).ToString();
+            }
             UpdateTimestamp();
         }
     }
