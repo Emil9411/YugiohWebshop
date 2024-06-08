@@ -8,6 +8,8 @@ namespace Yugioh.Server.Model.CartModels
         public int CartId { get; set; }
         public string? UserId { get; set; }
         public bool IsCheckedOut { get; set; }
+        public double ShippingPrice { get; set; }
+        public double DiscountPercent { get; set; }
         public DateTime CreatedAt { get; set; } = DateTime.Now;
         public DateTime UpdatedAt { get; set; } = DateTime.Now;
         public virtual ICollection<CartItem> CartItems { get; set; } = new List<CartItem>();
