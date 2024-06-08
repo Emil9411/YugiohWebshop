@@ -19,7 +19,7 @@ namespace Yugioh.Server.Services.CartOrderRepository
         // Clearing the cart
         Task ClearCart(string userId);
         // Checking out the cart
-        Task<Order> CheckoutCart(string userId, Order order);
+        Task<Cart> CheckoutCart(string userId);
         // Delete the carts of a user (admin only)
         Task DeleteCarts(string userId);
     }

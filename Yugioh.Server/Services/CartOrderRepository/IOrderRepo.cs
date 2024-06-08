@@ -5,7 +5,7 @@ namespace Yugioh.Server.Services.CartOrderRepository
     public interface IOrderRepo
     {
         // Creating a new order for a user after checking out
-        Task<Order> CreateOrder(string userId, Order order);
+        Task<Order> CreateOrder(string userId);
         // Getting all the orders of a user
         Task<List<Order>> GetOrders(string userId);
         // Getting an order by order id
