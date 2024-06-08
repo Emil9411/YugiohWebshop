@@ -129,7 +129,7 @@ namespace Yugioh.Server.Services.CartOrderRepository
             await _context.SaveChangesAsync();
         }
 
-        public async Task<Order> CheckoutCart(string userId, Order order)
+        public async Task<Cart> CheckoutCart(string userId)
         {
             var cart = await GetCart(userId);
             if (cart == null)
@@ -137,14 +137,40 @@ namespace Yugioh.Server.Services.CartOrderRepository
                 _logger.LogInformation($"Cart not found for user {userId}");
                 return null;
             }
-            order.CartId = cart.CartId;
-            order.TotalPrice = cart.GetTotalPrice().ToString();
-            order.CreatedAt = DateTime.Now;
-            _context.Orders.Add(order);
-            cart.IsCheckedOut = true;
+            foreach (var item in cart.CartItems)
+            {
+                if (item.MonsterProduct != null)
+                {
+                    if (item.Quantity > item.MonsterProduct.Inventory)
+                    {
+                        _logger.LogInformation($"Not enough quantity of card {item.ProductId} in inventory");
+                        item.HasInInventory = false;
+                        return null;
+                    }
+                    MonsterRemoveFromInventory(item.ProductId, item.Quantity);
+                }
+                else if (item.SpellAndTrapProduct != null)
+                {
+                    if (item.Quantity > item.SpellAndTrapProduct.Inventory)
+                    {
+                        _logger.LogInformation($"Not enough quantity of card {item.ProductId} in inventory");
+                        item.HasInInventory = false;
+                        return null;
+                    }
+                    SpellAndTrapRemoveFromInventory(item.ProductId, item.Quantity);
+                }
+                item.HasInInventory = true;
+            }
+            var cartItemsOk = cart.CartItems.All(item => item.HasInInventory);
+            if (!cartItemsOk)
+            {
+                _logger.LogInformation($"Not enough quantity of cards in inventory");
+                return null;
+            }
             _logger.LogInformation($"Cart checked out for user {userId}");
+            cart.IsCheckedOut = true;
             await _context.SaveChangesAsync();
-            return order;
+            return cart;
         }
 
         public async Task DeleteCarts(string userId)
@@ -230,7 +256,7 @@ namespace Yugioh.Server.Services.CartOrderRepository
             await _context.SaveChangesAsync();
         }
 
-        public async Task<Order> CreateOrder(string userId, Order order)
+        public async Task<Order> CreateOrder(string userId)
         {
             var cart = await GetCart(userId);
             if (cart == null)
@@ -238,13 +264,75 @@ namespace Yugioh.Server.Services.CartOrderRepository
                 _logger.LogInformation($"Cart not found for user {userId}");
                 return null;
             }
-            order.CartId = cart.CartId;
-            order.TotalPrice = cart.GetTotalPrice().ToString();
-            order.CreatedAt = DateTime.Now;
+            if (!cart.IsCheckedOut)
+            {
+                _logger.LogInformation($"Cart not checked out for user {userId}");
+                return null;
+            }
+            var order = new Order
+            {
+                UserId = userId,
+                ShippingPrice = cart.ShippingPrice.ToString(),
+                DiscountPercent = cart.DiscountPercent.ToString()
+            };
+            order.SetCart(cart);
+            order.SetTotalPrice(cart.ShippingPrice, cart.DiscountPercent);
             _context.Orders.Add(order);
-            _logger.LogInformation($"Order created for user {userId}");
             await _context.SaveChangesAsync();
+            _logger.LogInformation($"Order created for user {userId}");
             return order;
+        }
+
+        private async void MonsterAddToInventory(int cardId, int quantity)
+        {
+            var monsterCard = _context.MonsterCards.FirstOrDefault(card => card.CardId == cardId);
+            if (monsterCard == null)
+            {
+                _logger.LogInformation($"Monster card {cardId} not found");
+                return;
+            }
+            monsterCard.Inventory += quantity;
+            _logger.LogInformation($"Inventory of monster card {cardId} updated");
+            await _context.SaveChangesAsync();
+        }
+
+        private async void SpellAndTrapAddToInventory(int cardId, int quantity)
+        {
+            var spellAndTrapCard = _context.SpellAndTrapCards.FirstOrDefault(card => card.CardId == cardId);
+            if (spellAndTrapCard == null)
+            {
+                _logger.LogInformation($"Spell and trap card {cardId} not found");
+                return;
+            }
+            spellAndTrapCard.Inventory += quantity;
+            _logger.LogInformation($"Quantity of spell and trap card {cardId} updated");
+            await _context.SaveChangesAsync();
+        }
+
+        private async void MonsterRemoveFromInventory(int cardId, int quantity)
+        {
+            var monsterCard = _context.MonsterCards.FirstOrDefault(card => card.CardId == cardId);
+            if (monsterCard == null)
+            {
+                _logger.LogInformation($"Monster card {cardId} not found");
+                return;
+            }
+            monsterCard.Inventory -= quantity;
+            _logger.LogInformation($"Inventory of monster card {cardId} updated");
+            await _context.SaveChangesAsync();
+        }
+
+        private async void SpellAndTrapRemoveFromInventory(int cardId, int quantity)
+        {
+            var spellAndTrapCard = _context.SpellAndTrapCards.FirstOrDefault(card => card.CardId == cardId);
+            if (spellAndTrapCard == null)
+            {
+                _logger.LogInformation($"Spell and trap card {cardId} not found");
+                return;
+            }
+            spellAndTrapCard.Inventory -= quantity;
+            _logger.LogInformation($"Quantity of spell and trap card {cardId} updated");
+            await _context.SaveChangesAsync();
         }
     }
 }
